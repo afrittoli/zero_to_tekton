@@ -3,10 +3,15 @@
 % Title page
 \defbeamertemplate*{title page}{af}[1][]
 {
-  \begin{textblock*}{\paperwidth}(0.32cm,0.34cm)
-    \begin{beamercolorbox}[wd=0.4\paperwidth]{title page header}
-      \usebeamerfont{title}\inserttitle\par---\par%
-      \usebeamerfont{author}\small\insertauthor\par%
+  \begin{textblock*}{\paperwidth}(0.056\paperwidth,0.15\paperheight)
+    \begin{beamercolorbox}[wd=0.5\paperwidth]{title page header}%
+      \usebeamerfont{title}\inserttitle%
+    \end{beamercolorbox}%
+    \vfill
+  \end{textblock*}
+  \begin{textblock*}{\paperwidth}(0.056\paperwidth,0.52\paperheight)
+    \begin{beamercolorbox}[wd=0.5\paperwidth]{title page header}%
+      \usebeamerfont{author}\normalsize\insertauthor\par%
     \end{beamercolorbox}%
     \vfill
   \end{textblock*}
@@ -18,9 +23,9 @@
     \parbox{0.1\linewidth}{\vspace*{-20pt}\hspace*{70pt}}%
   }
   \setbeamertemplate{background}{
-    \includegraphics[width=\paperwidth,height=\paperheight]{img/title_background.png}
+    \includegraphics[width=\paperwidth,height=\paperheight]{img/title.png}
   }
-  \setbeamercolor*{footline}{fg=white}
+  \setbeamercolor*{footline}{fg=black}
   \@nameuse{ps@navigation}}
 \addtobeamertemplate{title page}{\thispagestyle{navigation@titlepage}}{}
 
