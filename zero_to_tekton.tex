@@ -48,7 +48,7 @@
   \tableofcontents
   }%
   {toc}
-  \frametitle{0 to CD}
+  \frametitle{Agenda}
 \end{lpicrblack}
 
 \section[Introduction]{Introduction}
@@ -130,285 +130,107 @@
   % Knative, Tekton and the CDF
 \end{lgrayrwhiteframe}
 
-% \section[Authoring]{Authoring}
+\section[From 0 to CD]{From 0 to CD}
+\begin{sectionwithpicrx}[pierre-bamin--ltjzTfhpCI-unsplash.jpg]{Photo by \href{https://unsplash.com/@bamin}{\underline{Pierre Bamin}}, CC0}
+\end{sectionwithpicrx}
 
-% \begin{sectionwithpicrx}[pierre-bamin--ltjzTfhpCI-unsplash.jpg]{Photo by \href{https://unsplash.com/@bamin}{\underline{Pierre Bamin}}, CC0}
-% \end{sectionwithpicrx}
+\begin{blackframe}
+  \frametitle{Install}
+  \begin{itemize}
+    \item Install
+    \item Operator
+    \item Nightly
+    \item Multi-arch
+  \end{itemize}
+\end{blackframe}
 
-% \begin{lpicrblack}[antoine-petitteville-RIdYHUISNuM-unsplash.jpg]{%
-%   Photo by \href{https://unsplash.com/@ant0ine}{\underline{Antoine Petitteville}}, CC0
-%   }%
-%   {%
-%     Steps:
-%     \begin{itemize}
-%       \item Off the Shelves containers
-%       \item Small scripts % no large scripts in YAML!
-%     \end{itemize}
-%     Tasks:
-%     \begin{itemize}
-%       \item Solve one specific problem
-%       \item Owned by a team
-%       \item Distributed maintenance
-%     \end{itemize}
-%     \vspace{0.05\paperheight}
-%     Reusability:
-%     \begin{itemize}
-%       \item Discovery
-%       \item Versioning
-%       \item Execution efficiency % pod and I/O overhead
-%     \end{itemize}
-%   }{}%
-%   \frametitle{Building Blocks}
-% \end{lpicrblack}
+\begin{blackframe}
+  \frametitle{Authoring}
+  \begin{itemize}
+    \item pipeline
+    \item catalog
+    \item hub
+    \item params, results, workspaces <- docs on website
+  \end{itemize}
+\end{blackframe}
 
-% \begin{grayframe}
-%   \frametitle{Catalog and Hub}
-%   Discovery:
-%   \begin{itemize}
-%     \item Kubernetes cluster
-%     \item Tekton Catalog
-%     \item Tekton Hub \& API
-%   \end{itemize}
-%   \vspace{0.03\paperheight}
-%   Versioning:
-%   \begin{itemize}
-%     \item Tekton Bundles
-%     \item Bundles CLI
-%   \end{itemize}
-%   \vspace{0.03\paperheight}
-%   Execution efficiency:
-%   \begin{itemize}
-%     \item Task Specialization
-%     \item Multiple Tasks in a Pod/Node
-%   \end{itemize}
-%   % open source, small team, authoring efficiency is important
-%   % IBM, migrating customers to Tekton, large number of tasks
-%   \begin{textblock*}{0.4\paperwidth}(0.4\paperwidth,0.1\paperheight)
-%     \begin{tikzpicture}%
-%       \node [opacity=0.9]{\includegraphics[width=0.4\paperwidth]{img/hub.png}};%
-%     \end{tikzpicture}
-%   \end{textblock*}
-%   \begin{textblock*}{0.3\paperwidth}(0.6\paperwidth,0.45\paperheight)
-%     \begin{tikzpicture}%
-%       \node [opacity=0.8]{\includegraphics[width=0.3\paperwidth]{img/hub-api.png}};%
-%     \end{tikzpicture}
-%   \end{textblock*}
-%   % Sharing Tasks and discovery
-%   % Tekton Bundles
-% \end{grayframe}
+\begin{blackframe}
+  \frametitle{Watching}
+  \begin{itemize}
+    \item kubectl
+    \item tkn
+    \item Dashboard
+    \item runtime aspects
+  \end{itemize}
+\end{blackframe}
 
-% \begin{tpicstripedframe}%
-%   {tekton-pipeline-blocks.png}%
-%   {%
-%   Building block? \\
-%   \vspace{0.03\paperheight}
-%   Supported by \\the catalog
-%   }%
-%   {%
-%   Swap a block \\
-%   \vspace{0.03\paperheight}
-%   Add a branch
-%   }%
-%   {%
-%   Different:
-%   \begin{itemize}
-%     \item Team
-%     \item Access
-%     \item Namespace
-%     \item Cluster
-%   \end{itemize}
-%   }%
-%   {%
-%   One workflow. \\
-%   \vspace{0.03\paperheight}
-%   How can we connect the parts?
-%   }%
-%   \frametitle{Pipelines}
-%   % Example: clone, build, scan, push, test, release, e2e test, publish \\
-%   % Supported by the catalog. \\
-%   % What scan strategy? Which tests? \\
-%   % I could have multiple test pipelines \\
-%   % Different parts owned by different teams \\
-%   % We still need small pipelines to do one job \\
-%   % How do I connect them?
-%   % Ever growing pipeline, multiple teams add to it
-% \end{tpicstripedframe}
+\begin{blackframe}
+  \frametitle{Launching}
+  \begin{itemize}
+    \item triggers
+    \item setup a github webhook
+    \item run a build on push
+    \item filtering: CEL, custom, when expressions
+  \end{itemize}
+\end{blackframe}
 
-% \section[Running]{Running}
+\begin{blackframe}
+  \frametitle{Monitoring}
+  \begin{itemize}
+    \item unattended execution, we need monitoring
+    \item event
+    \item cloudevents
+    \item notifications (github, slack)
+  \end{itemize}
+\end{blackframe}
 
-% \begin{sectionwithpic}[pexels-ray-bilcliff-1509237.jpg]{Photo by \href{https://www.pexels.com/@raybilcliff}{\underline{Ray Bilcliff}}, CC0}
-% \end{sectionwithpic}
+\begin{blackframe}
+  \frametitle{Experimental}
+  \begin{itemize}
+    \item loops
+    \item wait
+    \item CELRun / pip (?)
+  \end{itemize}
+\end{blackframe}
 
-% \begin{lgrayrwhiteframe}
-%   \frametitle{Triggers}
-%   Run Pipelines on Events:
-%   \begin{itemize}
-%     \item HTTP POST
-%     \item Pull Request, Image Published
-%   \end{itemize}
-%   \vspace{0.02\paperheight}
-%   Components:
-%   \begin{itemize}
-%     \item Receive: Event Listener
-%     \item Filter: Interceptors
-%     \item Run: Binding and Templates
-%   \end{itemize}
-%   \vspace{0.02\paperheight}
-%   Generate Events:
-%   \begin{itemize}
-%     \item k8s and CloudEvents
-%     \item Start, Run and Stop
-%   \end{itemize}
-%   \begin{textblock*}{0.51\paperwidth}(0.48\paperwidth,0.33\paperheight)
-%     \includegraphics[width=0.5\paperwidth]{img/tekton-triggers.png}
-%   \end{textblock*}
-% \end{lgrayrwhiteframe}
+\begin{blackframe}
+  \frametitle{Cleanup}
+  \begin{itemize}
+    \item execution history
+    \item results
+  \end{itemize}
+\end{blackframe}
 
-% \begin{tpicstripedframe}%
-%   {tekton-pipeline-async.png}%
-%   {%
-%   Receiving and sending events \\
-%   \vspace{0.03\paperheight}
-%   Composite Workflow \\
-%   \vspace{0.03\paperheight}
-%   Separate Ownership \\
-%   }%
-%   {%
-%   Dynamically add tasks \\
-%   \vspace{0.03\paperheight}
-%   Reuse pipeline \\
-%   \vspace{0.03\paperheight}
-%   Heterogeneous parts
-%   }%
-%   {%
-%   \textit{Issues}: \\
-%   \vspace{0.03\paperheight}
-%   Custom integrations \\
-%   \vspace{0.03\paperheight}
-%   Orchestration \\
-%   Visibility
-%   \vspace{0.03\paperheight}
-%   }%
-%   {%
-%   Events in CI/CD Special Interest Group \\
-%   \vspace{0.05\paperheight}
-%   \centering
-%   \includesvg[width=0.1\paperwidth]{img/cdf-icon-white.svg}
-%   }%
-%   \frametitle{Events}
-%   % Receiving and sending events
-%   % Further spread responsibility, break the pipeline
-%   % Interop and event SIG
-% \end{tpicstripedframe}
+\section[Roadmap]{Roadmap}
+\begin{sectionwithpic}[pexels-ray-bilcliff-1509237.jpg]{Photo by \href{https://www.pexels.com/@raybilcliff}{\underline{Ray Bilcliff}}, CC0}
+\end{sectionwithpic}
 
-% \section[Bottlenecks]{Bottlenecks}
-% \begin{sectionwithpicrx}[dan-cristian-padure-LDMgqr8z7ZE-unsplash.jpg]{Photo by \href{https://unsplash.com/@dancristianp}{\underline{Dan-Cristian Pădureț}}, CC0}
-% \end{sectionwithpicrx}
+\begin{blackframe}
+  \frametitle{TEP (optional)}
+  \begin{itemize}
+    \item Design principles
+    \item TEP process
+    \item TEP table
+  \end{itemize}
+\end{blackframe}
 
-% {
-% \begin{tblackbgrayframe}{Growing pipelines}
-%   %\frametitle{Growing pipelines}
-%   \begin{itemize}
-%     \item Directed Acyclic Graphs
-%     \item Large Pipelines (100 nodes, densely connected)
-%     \item Scale Issues?
-%   \end{itemize}
-%   \begin{itemize}
-%     \item DAG build on every reconcile
-%     \item Suboptimal code in the DAG computation
-%     \item Hundreds of nodes and connections
-%   \end{itemize}
-%   \begin{textblock*}{0.42\paperwidth}(0.55\paperwidth,0.35\paperheight)
-%     \includegraphics[width=0.42\paperwidth]{img/tekton-large-dag.png}
-%   \end{textblock*}
-% \end{tblackbgrayframe}
-% }
+\begin{blackframe}
+  \frametitle{Dogfooding (optional)}
+  \begin{itemize}
+    \item Using Tekton for Tekton
+    \item Source of examples
+    \item Source of bug discovery, feature requests
+  \end{itemize}
+\end{blackframe}
 
-% \begin{2columnsframe}%
-%   {%
-%     Under Pressure%
-%   }%
-%   {%
-%   Concurrent execution
-%   \begin{itemize}
-%     \item Cluster Resources: K8s scheduler
-%     \item K8s API: Informers
-%     \item Tekton Controllers: LeaderElection
-%   \end{itemize}
-%   \vspace{0.17\textheight}
-%   Potential enhancements:
-%   \begin{itemize}
-%     \item Throttling pipeline execution
-%     \item Tekton custom scheduler
-%   \end{itemize}
-%   }%
-%   {%
-%   In real life
-%   \begin{itemize}
-%     \item Thousands Tasks/month upstream
-%     \item Millions containers/month @IBM
-%     \item Throttling (for security too)
-%     \item Cluster pollution
-%   \end{itemize}
-%   \vspace{0.1\textheight}
-%   Upcoming features:
-%   \begin{itemize}
-%     \item Tekton Results
-%     \item Performance testing
-%     \item Metric improvements
-%   \end{itemize}
-%   % Many pipelines in parallel / bursts
-%   % -> Informers, LeaderElection
-%   % Large execution history
-%   }
-% \end{2columnsframe}
-
-% \begin{3squares}%
-%   {%
-%     Data and I/O
-%   }%
-%   {%
-%   \textit{Reusability vs. Efficiency} \\
-%   \vspace{0.04\paperheight}
-%   Common Tasks (\faArrowRight Pods):
-%   \begin{itemize}
-%     \item Clone a git repository
-%     \item Build a container image
-%     \item Download content from storage
-%     \item Run tests
-%   \end{itemize}
-%   }%
-%   {%
-%   \textit{Pods scheduled independently} \\
-%   \begin{itemize}
-%     \item Shared storage required (PVC)
-%     % provisioning time, different features with
-%     % different back-ends
-%     \item Extra I/O
-%     \item Extra execution time
-%   \end{itemize}
-%   }%
-%   {%
-%   \textit{Data in Pipelines} \\
-%   \vspace{0.02\paperheight}
-%   Meta: "Results", Large: "Workspaces" \\
-%   \vspace{0.01\paperheight}
-%   Alternatives: \\
-%   \begin{itemize}
-%     \item Multiple Tasks in a Pod
-%     % See pipeline in pipeline, custom tasks
-%     % Scheduling becomes challenging -> custom scheduler
-%     \item Re-usable Steps
-%     % Changes the unit of re-use
-%     % More complex syntax
-%     \item Custom scheduler
-%     % Implementation and maintenance cost
-%     % Complex problem scape
-%   \end{itemize}
-%   }%
-%   % Unit of re-use and data
-%   % -> tasks vs pipelines, pod overhead, data across nodes
-% \end{3squares}
+\begin{blackframe}
+  \frametitle{Roadmap}
+  \begin{itemize}
+    \item Towards v1
+    \item What's coming in 2021
+    \item Release processes and cadence
+  \end{itemize}
+\end{blackframe}
 
 \section[Q\&A]{Thank You! \\Questions?}
 
@@ -422,7 +244,7 @@
     \item \normalsize Tekton community: \href{https://github.com/tektoncd/community}{github.com/tektoncd/community} \\
   \end{itemize}
   \begin{itemize}
-    \item Slides: \href{https://github.com/afrittoli/scaling_pipelines_with_tekton/blob/scd2021/scaling_pipelines_with_tekton.pdf}{github.com/afrittoli/scaling\_pipelines\_with\_tekton}
+    \item Slides: \href{https://github.com/afrittoli/zero_to_tekton/blob/scd2021/scaling_pipelines_with_tekton.pdf}{github.com/afrittoli/zero\_to\_tekton}
     \item Tekton: \href{https://tekton.dev}{tekton.dev}
     \item Tekton on GitHub: \href{https://github.com/tektoncd}{github.com/tektoncd}
     \item Tekton Results: \href{https://github.com/tektoncd/results}{github.com/tektoncd/results}
