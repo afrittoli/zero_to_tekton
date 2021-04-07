@@ -147,7 +147,6 @@ kind: Pipeline
 metadata:
   name: clone-build
 spec:
-  serviceAccountName: build-bot
   workspaces:
     - name: source
   results:
@@ -175,10 +174,27 @@ spec:
         name: kaniko
       params:
         - name: IMAGE
-          value: uk.icr.io/afrittoli/zero2tekton:$(tasks.clone.results.commit)
+          value: uk.icr.io/tekton/zero2tekton:$(tasks.clone.results.commit)
         - name: CONTEXT
           value: image
       workspaces:
         - name: source
           workspace: source
+        - name: dockerconfig
+          workspace: dockerconfig
 ```
+
+To run the pipeline:
+
+```sh
+cat <<EOF > workspace-template.yaml
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+EOF
+tkn pipeline start clone-build -s build-bot --workspace name=source,volumeClaimTemplateFile=workspace-template.yaml
+```
+

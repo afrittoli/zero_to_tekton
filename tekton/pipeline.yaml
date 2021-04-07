@@ -3,9 +3,9 @@ kind: Pipeline
 metadata:
   name: clone-build
 spec:
-  serviceAccountName: build-bot
   workspaces:
     - name: source
+    - name: dockerconfig
   results:
     - name: git-sha
       description: the git sha that has been built
@@ -31,9 +31,11 @@ spec:
         name: kaniko
       params:
         - name: IMAGE
-          value: uk.icr.io/afrittoli/zero2tekton:$(tasks.clone.results.commit)
+          value: uk.icr.io/tekton/zero2tekton:$(tasks.clone.results.commit)
         - name: CONTEXT
           value: image
       workspaces:
         - name: source
           workspace: source
+        - name: dockerconfig
+          workspace: dockerconfig
