@@ -1,0 +1,39 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: clone-build
+spec:
+  serviceAccountName: build-bot
+  workspaces:
+    - name: source
+  results:
+    - name: git-sha
+      description: the git sha that has been built
+      value: $(tasks.clone.commit)
+    - name: image-sha
+      description: the sha of the target container image
+      value: $(tasks.build.IMAGE-DIGEST)
+  tasks:
+    - name: clone
+      taskRef:
+        name: git-clone
+      params:
+        - name: url
+          value: https://github.com/afrittoli/zero_to_tekton
+        - name: revision
+          value: main
+      workspaces:
+        - name: output
+          workspace: source
+    - name: build
+      runAfter: ['clone']
+      taskRef:
+        name: kaniko
+      params:
+        - name: IMAGE
+          value: uk.icr.io/afrittoli/zero2tekton:$(tasks.clone.results.commit)
+        - name: CONTEXT
+          value: image
+      workspaces:
+        - name: source
+          workspace: source

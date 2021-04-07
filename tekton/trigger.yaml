@@ -1,0 +1,39 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: all-repos
+  namespace: tekton-ci
+spec:
+  interceptors:
+    - cel:
+        overlays:
+        - key: body
+          expression: "body.marshalJSON().truncate(60)"
+  bindings:
+  - name: body
+    value: $(extensions.body)
+  template:
+    spec:
+      params:
+      - name: body
+      resourceTemplates:
+      - apiVersion: "tekton.dev/v1beta1"
+        kind: TaskRun
+        metadata:
+            generateName: "demo-"
+        spec:
+          params:
+            - name: body
+              value: $(tt.params.body)
+          taskSpec:
+            params:
+              - name: body
+            steps:
+            - name: print
+              image: stedolan/jq
+              script: |
+                #!/bin/sh
+                set +x
+                echo ===============
+                echo 'body: $(params.body)'
+                echo ===============
