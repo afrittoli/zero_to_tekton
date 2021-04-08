@@ -152,10 +152,10 @@ spec:
   results:
     - name: git-sha
       description: the git sha that has been built
-      value: $(tasks.clone.commit)
+      value: $(tasks.clone.results.commit)
     - name: image-sha
       description: the sha of the target container image
-      value: $(tasks.build.IMAGE-DIGEST)
+      value: $(tasks.build.results.IMAGE-DIGEST)
   tasks:
     - name: clone
       taskRef:
@@ -196,5 +196,34 @@ spec:
       storage: 1Gi
 EOF
 tkn pipeline start clone-build -s build-bot --workspace name=source,volumeClaimTemplateFile=workspace-template.yaml
+```
+
+Check results using `tkn`:
+
+```sh
+tkn pr describe clone-build-run-<xyz>
+```
+
+The pipeline is made of two tasks. Each task is executed in a dedicated
+pod. They share data through the PVC:
+
+```sh
+kubectl get pod -l tekton.dev/pipelineRun=clone-build-run-<xyz>
+```
+
+Try and browse the `PipelineRun` via the [dashboard](http://localhost:9197/#/namespaces/default/pipelineruns/).
+
+### Deploy the built image
+
+Check the sha:
+
+```sh
+tkn pr describe <or-name>
+```
+
+Run in docker:
+
+```sh
+docker run -it --rm -d -p 8080:80 --name web uk.icr.io/tekton/zero2tekton@sha256:<from results>
 ```
 

@@ -9,10 +9,10 @@ spec:
   results:
     - name: git-sha
       description: the git sha that has been built
-      value: $(tasks.clone.commit)
+      value: $(tasks.clone.results.commit)
     - name: image-sha
       description: the sha of the target container image
-      value: $(tasks.build.IMAGE-DIGEST)
+      value: $(tasks.build.results.IMAGE-DIGEST)
   tasks:
     - name: clone
       taskRef:
