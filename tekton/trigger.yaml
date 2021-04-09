@@ -23,7 +23,7 @@ spec:
             generateName: "zero2cd-"
         spec:
           pipelineRef:
-            name: continuous-delivery
+            name: zero2cd
           params:
             - name: body
               value: $(tt.params.revision)
