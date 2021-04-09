@@ -22,18 +22,20 @@ spec:
         metadata:
             generateName: "clone-build-deploy-"
         spec:
+          pipelineRef:
+            name: clone-build-deploy
           params:
             - name: body
               value: $(tt.params.revision)
-        workspaces:
-          - name: source
-            volumeClaimTemplate:
-              spec:
-                accessModes:
-                  - ReadWriteOnce
-                resources:
-                  requests:
-                    storage: 1Gi
-          - name: dockerconfig
-            secret:
-              secretName: regcred
+          workspaces:
+            - name: source
+              volumeClaimTemplate:
+                spec:
+                  accessModes:
+                    - ReadWriteOnce
+                  resources:
+                    requests:
+                      storage: 1Gi
+            - name: dockerconfig
+              secret:
+                secretName: regcred

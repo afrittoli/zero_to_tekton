@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: clone-build
+  name: clone-build-deploy
 spec:
   params:
     - name: registry
