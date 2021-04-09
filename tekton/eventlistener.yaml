@@ -3,32 +3,31 @@ apiVersion: triggers.tekton.dev/v1alpha1
 kind: EventListener
 metadata:
   name: tekton-ci
-  namespace: tekton-ci
 spec:
   serviceAccountName: tekton-ci-workspace-listener
   namespaceSelector:
-    matchNames: ['tekton-ci']
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
- name: ing
- namespace: tekton-ci
- annotations:
-   kubernetes.io/ingress.class: "public-iks-k8s-nginx"
-spec:
- tls:
- - hosts:
-   - tekton-cnd-dff43bc8701fcd5837d6de963718ad39-0000.eu-gb.containers.appdomain.cloud
-   secretName: tekton-cnd-dff43bc8701fcd5837d6de963718ad39-0000
- rules:
- - host: tekton-cnd-dff43bc8701fcd5837d6de963718ad39-0000.eu-gb.containers.appdomain.cloud
-   http:
-     paths:
-     - path: /
-       pathType: Prefix
-       backend:
-         service:
-           name: el-tekton-ci
-           port:
-             number: 8080
+    matchNames: ['default']
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#  name: ing
+#  namespace: tekton-ci
+#  annotations:
+#    kubernetes.io/ingress.class: "public-iks-k8s-nginx"
+# spec:
+#  tls:
+#  - hosts:
+#    - tekton-cnd-dff43bc8701fcd5837d6de963718ad39-0000.eu-gb.containers.appdomain.cloud
+#    secretName: tekton-cnd-dff43bc8701fcd5837d6de963718ad39-0000
+#  rules:
+#  - host: tekton-cnd-dff43bc8701fcd5837d6de963718ad39-0000.eu-gb.containers.appdomain.cloud
+#    http:
+#      paths:
+#      - path: /
+#        pathType: Prefix
+#        backend:
+#          service:
+#            name: el-tekton-ci
+#            port:
+#              number: 8080

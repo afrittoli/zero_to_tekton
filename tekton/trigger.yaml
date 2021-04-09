@@ -1,39 +1,39 @@
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: Trigger
 metadata:
-  name: all-repos
-  namespace: tekton-ci
+  name: github-push
 spec:
   interceptors:
+    - github:
+        eventTypes:
+          - push
     - cel:
-        overlays:
-        - key: body
-          expression: "body.marshalJSON().truncate(60)"
+        filter: header.match('X-GitHub-Hook-Installation-Target-ID', '108936')
   bindings:
-  - name: body
-    value: $(extensions.body)
+  - name: revision
+    value: $(body.after)
   template:
     spec:
       params:
-      - name: body
+      - name: revision
       resourceTemplates:
       - apiVersion: "tekton.dev/v1beta1"
-        kind: TaskRun
+        kind: PipelineRun
         metadata:
-            generateName: "demo-"
+            generateName: "clone-build-deploy-"
         spec:
           params:
             - name: body
-              value: $(tt.params.body)
-          taskSpec:
-            params:
-              - name: body
-            steps:
-            - name: print
-              image: stedolan/jq
-              script: |
-                #!/bin/sh
-                set +x
-                echo ===============
-                echo 'body: $(params.body)'
-                echo ===============
+              value: $(tt.params.revision)
+        workspaces:
+          - name: source
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 1Gi
+          - name: dockerconfig
+            secret:
+              secretName: regcred

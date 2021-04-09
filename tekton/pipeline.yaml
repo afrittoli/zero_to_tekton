@@ -6,6 +6,8 @@ spec:
   params:
     - name: registry
       default: uk.icr.io/tekton
+    - name: revision
+      default: main
   workspaces:
     - name: source
     - name: dockerconfig
@@ -24,7 +26,7 @@ spec:
       params:
         - name: url
           value: https://github.com/afrittoli/zero_to_tekton
-        - name: revision
+        - name: $(params.revision)
           value: main
       workspaces:
         - name: output

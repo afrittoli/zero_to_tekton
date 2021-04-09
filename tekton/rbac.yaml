@@ -78,7 +78,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: tekton-ci-workspace-listener
-  namespace: tekton-ci
+  namespace: default
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -121,7 +121,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: tekton-ci-workspace-listener
-  namespace: tekton-ci
+  namespace: default
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
