@@ -26,8 +26,8 @@ spec:
       params:
         - name: url
           value: https://github.com/afrittoli/zero_to_tekton
-        - name: $(params.revision)
-          value: main
+        - name: revision
+          value: $(params.revision)
       workspaces:
         - name: output
           workspace: source
