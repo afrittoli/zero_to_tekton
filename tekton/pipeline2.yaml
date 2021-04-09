@@ -45,3 +45,29 @@ spec:
           workspace: source
         - name: dockerconfig
           workspace: dockerconfig
+    - name: deploy
+      runAfter: ['build']
+      taskSpec:
+        params:
+          - name: image
+        steps:
+          - name: deploy
+            image: bitnami/kubectl:latest
+            script: |
+              #!/bin/sh
+              set -ex
+
+              # Try to create a deployment, in case it's our first run
+              kubectl create deployment cnd-demo --image $(params.image) || true
+
+              # Update the deployment, rollout new image
+              kubectl set image deployment/cnd-demo *=$(params.image)
+
+              # Create a service if it doesn't exists yet
+              kubectl expose deployment/cnd-demo --port 8080 --target-port 80
+
+              # Make sure we run at least two pods
+              k scale --replicas=2 deployment/cnd-demo
+      params:
+        - name: image
+          value: $(params.registry)/zero2tekton@$(tasks.build.results.IMAGE-DIGEST)

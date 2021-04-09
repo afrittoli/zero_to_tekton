@@ -25,7 +25,7 @@ iks cluster config --cluster tekton-cnd # Update the token in the context
 
 ```sh
 # Source: https://github.com/tektoncd/plumbing/blob/main/hack/tekton_in_kind.sh
-curl https://raw.githubusercontent.com/tektoncd/plumbing/main/hack/tekton_in_kind.sh | bash -s
+./tekton/tekton_in_kind.sh
 ```
 
 ### Setup in IBM Cloud with the Tekton Operator
@@ -54,8 +54,7 @@ tkn version
 With the Dashboard:
 
 ```sh
-kubectl --context $KIND_CONTEXT port-forward service/tekton-dashboard -n tekton-pipelines 9197:9097 &
-kubectl --context $IKS_CONTEXT port-forward service/tekton-dashboard -n tekton-pipelines 9297:9097 &
+kubectl --context $IKS_CONTEXT port-forward service/tekton-dashboard -n tekton-pipelines 9097 &
 ```
 
 ### Nightly builds
@@ -145,47 +144,8 @@ tkn task describe kaniko
 
 We build a simple pipeline:
 
-```yaml
-apiVersion: tekton.dev/v1beta1
-kind: Pipeline
-metadata:
-  name: clone-build
-spec:
-  workspaces:
-    - name: source
-  results:
-    - name: git-sha
-      description: the git sha that has been built
-      value: $(tasks.clone.results.commit)
-    - name: image-sha
-      description: the sha of the target container image
-      value: $(tasks.build.results.IMAGE-DIGEST)
-  tasks:
-    - name: clone
-      taskRef:
-        name: git-clone
-      params:
-        - name: url
-          value: https://github.com/afrittoli/zero_to_tekton
-        - name: revision
-          value: main
-      workspaces:
-        - name: output
-          workspace: source
-    - name: build
-      runAfter: ['clone']
-      taskRef:
-        name: kaniko
-      params:
-        - name: IMAGE
-          value: uk.icr.io/tekton/zero2tekton:$(tasks.clone.results.commit)
-        - name: CONTEXT
-          value: image
-      workspaces:
-        - name: source
-          workspace: source
-        - name: dockerconfig
-          workspace: dockerconfig
+```sh
+kubectl create -f tekton/pipeline.yaml
 ```
 
 To run the pipeline:
@@ -199,20 +159,20 @@ spec:
     requests:
       storage: 1Gi
 EOF
-tkn pipeline start clone-build --workspace name=source,volumeClaimTemplateFile=workspace-template.yaml --workspace name=dockerconfig,secret=regcred
+tkn pipeline start zero2cd --workspace name=source,volumeClaimTemplateFile=workspace-template.yaml --workspace name=dockerconfig,secret=regcred
 ```
 
 Check results using `tkn`:
 
 ```sh
-tkn pr describe clone-build-run-<xyz>
+tkn pr describe zero2cd-run-<xyz>
 ```
 
 The pipeline is made of two tasks. Each task is executed in a dedicated
 pod. They share data through the PVC:
 
 ```sh
-kubectl get pod -l tekton.dev/pipelineRun=clone-build-run-<xyz>
+kubectl get pod -l tekton.dev/pipelineRun=zero2cd-run-<xyz>
 ```
 
 Try and browse the `PipelineRun` via the [dashboard](http://localhost:9197/#/namespaces/default/pipelineruns/).
@@ -229,67 +189,34 @@ Run in docker:
 
 ```sh
 docker run -it --rm -d -p 8080:80 --name web uk.icr.io/tekton/zero2tekton@sha256:<from results>
+open http://localhost:8080/
 ```
 
 Add a deploy task to the pipeline:
 
-```yaml
-    - name: deploy
-      runAfter: ['build']
-      taskSpec:
-        params:
-          - name: image
-        steps:
-          - name: deploy
-            image: bitnami/kubectl:latest
-            script: |
-              #!/bin/sh
-              set -ex
-
-              # Try to create a deployment, in case it's our first run
-              kubectl create deployment cnd-demo --image $(params.image) || true
-
-              # Update the deployment, rollout new image
-              kubectl set image deployment/cnd-demo *=$(params.image)
-      params:
-        - name: image
-          value: uk.icr.io/tekton/zero2tekton@$(tasks.build.results.IMAGE-DIGEST)
-```
-
-Create a pull secret and add it to the default service account:
-
 ```sh
-kubectl create -f tekton/icr.yaml
-kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "all-icr-io"}]}'
+kubectl replace -f tekton/pipeline2.yaml
+kubectl create -f tekton/ingress.yaml
 ```
 
 Re-run the pipeline:
 
 ```sh
-tkn pipeline start clone-build --workspace name=source,volumeClaimTemplateFile=workspace-template.yaml --workspace name=dockerconfig,secret=regcred
-```
-
-Connect to the image:
-
-```sh
-k port-forward deployment/cnd-demo 8080:80
-open http://localhost:8080
+tkn pipeline start zero2cd --workspace name=source,volumeClaimTemplateFile=workspace-template.yaml --workspace name=dockerconfig,secret=regcred
 ```
 
 ## Launching
 
-Create trigger resources: event listener and trigger:
+Create trigger resources: event listener, trigger and ingress:
 
 ```sh
-kubectl create -f tekton/rbac.yaml
 kubectl create -f tekton/eventlistener.yaml
 kubectl create -f tekton/trigger.yaml
-kubectl port-forward service/el-tekton-ci 3000:8080
 ```
 
 Run the smee client to receive events from the smee channel configured
 in the GitHub App:
 
 ```sh
-smee -u https://smee.io/uIq3Yv0K0PRZxqMB
+smee -u https://smee.io/uIq3Yv0K0PRZxqMB --target http://localhost/ci
 ```

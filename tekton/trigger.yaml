@@ -20,10 +20,10 @@ spec:
       - apiVersion: "tekton.dev/v1beta1"
         kind: PipelineRun
         metadata:
-            generateName: "clone-build-deploy-"
+            generateName: "zero2cd-"
         spec:
           pipelineRef:
-            name: clone-build-deploy
+            name: continuous-delivery
           params:
             - name: body
               value: $(tt.params.revision)

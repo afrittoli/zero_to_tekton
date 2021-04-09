@@ -162,3 +162,4 @@ TSWLatexianTemp*
 # Misc
 .DS_Store
 .vscode
+tekton/.secrets
