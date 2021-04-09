@@ -284,4 +284,12 @@ Create trigger resources: event listener and trigger:
 kubectl create -f tekton/rbac.yaml
 kubectl create -f tekton/eventlistener.yaml
 kubectl create -f tekton/trigger.yaml
+kubectl port-forward service/el-tekton-ci 3000:8080
+```
+
+Run the smee client to receive events from the smee channel configured
+in the GitHub App:
+
+```sh
+smee -u https://smee.io/uIq3Yv0K0PRZxqMB
 ```
