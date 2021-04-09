@@ -3,9 +3,13 @@ kind: Pipeline
 metadata:
   name: clone-build
 spec:
+  params:
+    - name: registry
+      default: uk.icr.io/tekton
   workspaces:
     - name: source
     - name: dockerconfig
+      optional: true
   results:
     - name: git-sha
       description: the git sha that has been built
@@ -31,7 +35,7 @@ spec:
         name: kaniko
       params:
         - name: IMAGE
-          value: uk.icr.io/tekton/zero2tekton:$(tasks.clone.results.commit)
+          value: $(params.registry)/zero2tekton:$(tasks.clone.results.commit)
         - name: CONTEXT
           value: image
       workspaces:
@@ -39,3 +43,23 @@ spec:
           workspace: source
         - name: dockerconfig
           workspace: dockerconfig
+    - name: deploy
+      runAfter: ['build']
+      taskSpec:
+        params:
+          - name: image
+        steps:
+          - name: deploy
+            image: bitnami/kubectl:latest
+            script: |
+              #!/bin/sh
+              set -ex
+
+              # Try to create a deployment, in case it's our first run
+              kubectl create deployment cnd-demo --image $(params.image) || true
+
+              # Update the deployment, rollout new image
+              kubectl set image deployment/cnd-demo *=$(params.image)
+      params:
+        - name: image
+          value: $(params.registry)/zero2tekton@$(tasks.build.results.IMAGE-DIGEST)

@@ -81,6 +81,10 @@ Work [has started](https://github.com/tektoncd/community/pull/383) for Windows s
 
 ## Authoring
 
+```sh
+kubectl config use-context kind-tekton
+```
+
 ### The Tekton Hub
 
 - Via web: [Tekton Hub](https://hub.tekton.dev)
@@ -101,7 +105,7 @@ Notice the results in the `TaskRun`.
 One can also use `kubectl` directly, the YAML can be verbose, but it does provide a few more insights, like annotations and events:
 
 ```sh
-kubectl describe tr/git-clone-run-<xyz>
+kubectl describe taskrun/git-clone-run-<xyz>
 ```
 
 Annotations are inherited from the catalog task too!
@@ -195,7 +199,7 @@ spec:
     requests:
       storage: 1Gi
 EOF
-tkn pipeline start clone-build -s build-bot --workspace name=source,volumeClaimTemplateFile=workspace-template.yaml
+tkn pipeline start clone-build --workspace name=source,volumeClaimTemplateFile=workspace-template.yaml --workspace name=dockerconfig,secret=regcred
 ```
 
 Check results using `tkn`:
@@ -213,17 +217,62 @@ kubectl get pod -l tekton.dev/pipelineRun=clone-build-run-<xyz>
 
 Try and browse the `PipelineRun` via the [dashboard](http://localhost:9197/#/namespaces/default/pipelineruns/).
 
-### Deploy the built image
+### Deploy and update the built image
 
 Check the sha:
 
 ```sh
-tkn pr describe <or-name>
+tkn pr describe clone-build-run-<xyz>
 ```
 
 Run in docker:
 
 ```sh
 docker run -it --rm -d -p 8080:80 --name web uk.icr.io/tekton/zero2tekton@sha256:<from results>
+```
+
+Add a deploy task to the pipeline:
+
+```yaml
+    - name: deploy
+      runAfter: ['build']
+      taskSpec:
+        params:
+          - name: image
+        steps:
+          - name: deploy
+            image: bitnami/kubectl:latest
+            script: |
+              #!/bin/sh
+              set -ex
+
+              # Try to create a deployment, in case it's our first run
+              kubectl create deployment cnd-demo --image $(params.image) || true
+
+              # Update the deployment, rollout new image
+              kubectl set image deployment/cnd-demo *=$(params.image)
+      params:
+        - name: image
+          value: uk.icr.io/tekton/zero2tekton@$(tasks.build.results.IMAGE-DIGEST)
+```
+
+Create a pull secret and add it to the default service account:
+
+```sh
+kubectl create -f tekton/icr.yaml
+kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "all-icr-io"}]}'
+```
+
+Re-run the pipeline:
+
+```sh
+tkn pipeline start clone-build --workspace name=source,volumeClaimTemplateFile=workspace-template.yaml --workspace name=dockerconfig,secret=regcred
+```
+
+Connect to the image:
+
+```sh
+k port-forward deployment/cnd-demo 8080:80
+open http://localhost:8080
 ```
 

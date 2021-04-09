@@ -29,6 +29,13 @@ rules:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
+  name: build-bot
+imagePullSecrets:
+  - name: regcred
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
   name: tekton-ci-workspace-listener
 secrets:
 - name: ci-webhook
@@ -119,3 +126,30 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: tekton-ci-jobs-triggers
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: deployer2default
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["*"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets"]
+  verbs: ["*"]
+- apiGroups: [""]
+  resources: ["configmaps", "secrets"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: default-deployer2default
+subjects:
+- kind: ServiceAccount
+  name: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: deployer2default
