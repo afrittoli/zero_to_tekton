@@ -132,6 +132,8 @@ Edit the task to see what happens `kubectl edit task/git-clone`:
       ls $(workspaces.output.path)
 ```
 
+Look at the steps via the dashboard.
+
 ### Pipelines, PipelineRuns, Workspaces, Results
 
 Let's build something more interesting:
@@ -182,7 +184,7 @@ Try and browse the `PipelineRun` via the [dashboard](http://localhost:9197/#/nam
 Check the sha:
 
 ```sh
-tkn pr describe clone-build-run-<xyz>
+tkn pr describe zero2cd-run-<xyz>
 ```
 
 Run in docker:
@@ -205,6 +207,12 @@ Re-run the pipeline:
 tkn pipeline start zero2cd --workspace name=source,volumeClaimTemplateFile=workspace-template.yaml --workspace name=dockerconfig,secret=regcred
 ```
 
+Check in the dashboard. Once finished:
+
+```sh
+open http://localhost/demo/
+```
+
 ## Launching
 
 Create trigger resources: event listener, trigger and ingress:
@@ -218,5 +226,5 @@ Run the smee client to receive events from the smee channel configured
 in the GitHub App:
 
 ```sh
-smee -u https://smee.io/uIq3Yv0K0PRZxqMB --target http://localhost/ci
+smee -u https://smee.io/uIq3Yv0K0PRZxqMB --target http://localhost/ci &
 ```

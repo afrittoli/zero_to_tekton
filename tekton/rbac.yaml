@@ -133,10 +133,10 @@ metadata:
   name: deployer2default
 rules:
 - apiGroups: [""]
-  resources: ["pods"]
+  resources: ["pods", "services"]
   verbs: ["*"]
 - apiGroups: ["apps"]
-  resources: ["deployments", "replicasets"]
+  resources: ["deployments", "replicasets", "deployments/scale"]
   verbs: ["*"]
 - apiGroups: [""]
   resources: ["configmaps", "secrets"]

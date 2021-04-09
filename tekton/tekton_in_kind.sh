@@ -112,7 +112,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/mast
 kubectl wait --namespace ingress-nginx \
   --for=condition=ready pod \
   --selector=app.kubernetes.io/component=controller \
-  --timeout=90s
+  --timeout=120s
 
 # connect the registry to the cluster network
 # (the network may already be connected)
@@ -148,14 +148,17 @@ kind: Ingress
 metadata:
   name: tekton-dashboard
   namespace: tekton-pipelines
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
   - http:
       paths:
-      - path: /dashboard
+      - path: /dashboard(/|$)(.*)
         backend:
           serviceName: tekton-dashboard
           servicePort: 9097
+        path: /*
 EOF
 
-echo “Tekton Dashboard available at http://localhost/dashboard”
+echo “Tekton Dashboard available at http://localhost/dashboard/”

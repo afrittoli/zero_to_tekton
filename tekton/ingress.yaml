@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ing
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /ci(/|$)(.*)
+        backend:
+          serviceName: el-tekton-ci
+          servicePort: 8080
+      - path: /demo(/|$)(.*)
+        backend:
+          serviceName: cnd-demo
+          servicePort: 8080
