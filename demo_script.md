@@ -276,3 +276,12 @@ k port-forward deployment/cnd-demo 8080:80
 open http://localhost:8080
 ```
 
+## Launching
+
+Create trigger resources: event listener and trigger:
+
+```sh
+kubectl create -f tekton/rbac.yaml
+kubectl create -f tekton/eventlistener.yaml
+kubectl create -f tekton/trigger.yaml
+```
