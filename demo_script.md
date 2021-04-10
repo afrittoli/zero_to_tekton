@@ -123,7 +123,7 @@ Notice the `step-clone` container. Steps in Tekton tasks are containers, execute
 Edit the task to see what happens `kubectl edit task/git-clone`:
 
 ```yaml
-  - image: busybox
+  - image: docker.io/library/busybox@sha256:ae39a6f5c07297d7ab64dbd4f82c77c874cc6a94cea29fdec309d0992574b4f7
     name: hello
     resources: {}
     script: |

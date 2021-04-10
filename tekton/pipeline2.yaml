@@ -52,7 +52,7 @@ spec:
           - name: image
         steps:
           - name: deploy
-            image: bitnami/kubectl:latest
+            image: docker.io/bitnami/kubectl@sha256:792e0aaabee6c51d734b5d3b150ba990d6106c4c081731d8570c1b9afe0c52d9
             script: |
               #!/bin/sh
               set -ex

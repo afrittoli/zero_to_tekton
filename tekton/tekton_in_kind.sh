@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e -o pipefail
+set -x
 
 declare TEKTON_PIPELINE_VERSION TEKTON_TRIGGERS_VERSION TEKTON_DASHBOARD_VERSION
 
@@ -105,6 +106,11 @@ containerdConfigPatches:
 EOF
 fi
 
+# Populate the image cache in the background
+for image in $(cat tekton/image-cache.txt) ; do
+  kind load docker-image $image --name ${KIND_CLUSTER_NAME} &> tekton/cache.log
+done &
+
 # Deploy the ingress
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/kind/deploy.yaml
 kubectl wait --namespace ingress-nginx \
@@ -115,11 +121,6 @@ kubectl wait --namespace ingress-nginx \
 # connect the registry to the cluster network
 # (the network may already be connected)
 docker network connect "kind" "${reg_name}" || true
-
-# Populate the image cache
-for image in $(cat tekton/image-cache.txt) ; do
-  kind load docker-image $image --name ${KIND_CLUSTER_NAME}; &> tekton/cache.log
-done
 
 # Install Tekton Pipeline, Triggers and Dashboard
 kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/previous/${TEKTON_PIPELINE_VERSION}/release.yaml
@@ -146,22 +147,24 @@ sleep 10
 kubectl wait -n tekton-pipelines --for=condition=ready pods --all --timeout=120s
 
 cat <<EOF | kubectl create -f -
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: tekton-dashboard
   namespace: tekton-pipelines
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/rewrite-target: /\$2
 spec:
   rules:
   - http:
       paths:
       - path: /dashboard(/|$)(.*)
+        pathType: Prefix
         backend:
-          serviceName: tekton-dashboard
-          servicePort: 9097
-        path: /*
+          service:
+            name: tekton-dashboard
+            port:
+              number: 9097
 EOF
 
 echo “Tekton Dashboard available at http://localhost/dashboard/”
