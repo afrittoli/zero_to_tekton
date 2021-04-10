@@ -118,6 +118,11 @@ kubectl wait --namespace ingress-nginx \
 # (the network may already be connected)
 docker network connect "kind" "${reg_name}" || true
 
+# Populate the image cache
+for image in $(cat tekton/image-cache.txt) ; do
+  kind load docker-image $image --name ${KIND_CLUSTER_NAME}; &> tekton/cache.log
+done
+
 # Install Tekton Pipeline, Triggers and Dashboard
 kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/previous/${TEKTON_PIPELINE_VERSION}/release.yaml
 kubectl apply -f https://storage.googleapis.com/tekton-releases/triggers/previous/${TEKTON_TRIGGERS_VERSION}/release.yaml

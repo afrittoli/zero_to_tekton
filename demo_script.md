@@ -228,3 +228,17 @@ in the GitHub App:
 ```sh
 smee -u https://smee.io/uIq3Yv0K0PRZxqMB --target http://localhost/ci &
 ```
+
+Make a change to the demo page.
+Create a commit and push it. See the PR running in the dashboard.
+Describe the PR via `tkn`
+
+Notice the labels. We can use them to filter resources.
+
+```sh
+tkn pr list --label triggers.tekton.dev/trigger=github-push
+```
+
+Have a look at the trigger definition.
+We use a CEL filter to filter based on headers and body.
+One can build custom interceptors to add content or implement special filtering. When expression could be used to build and deploy only when changes were made to the container image.

@@ -24,6 +24,7 @@ spec:
         spec:
           pipelineRef:
             name: zero2cd
+            bundle: localhost:5000/zero2cd:2.0
           params:
             - name: body
               value: $(tt.params.revision)
