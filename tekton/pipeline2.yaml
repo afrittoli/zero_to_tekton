@@ -41,7 +41,7 @@ spec:
         - name: IMAGE
           value: $(params.registry)/zero2tekton:$(tasks.clone.results.commit)
         - name: CONTEXT
-          value: image
+          value: images/demo
       workspaces:
         - name: source
           workspace: source
