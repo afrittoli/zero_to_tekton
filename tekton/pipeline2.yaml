@@ -5,8 +5,10 @@ metadata:
 spec:
   params:
     - name: registry
+      type: string
       default: uk.icr.io/tekton
     - name: revision
+      type: string
       default: main
   workspaces:
     - name: source
@@ -50,6 +52,7 @@ spec:
       taskSpec:
         params:
           - name: image
+            type: string
         steps:
           - name: deploy
             image: docker.io/bitnami/kubectl@sha256:792e0aaabee6c51d734b5d3b150ba990d6106c4c081731d8570c1b9afe0c52d9

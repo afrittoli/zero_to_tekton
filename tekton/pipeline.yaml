@@ -6,8 +6,10 @@ spec:
   params:
     - name: registry
       default: uk.icr.io/tekton
+      type: string
     - name: revision
       default: main
+      type: string
   workspaces:
     - name: source
     - name: dockerconfig

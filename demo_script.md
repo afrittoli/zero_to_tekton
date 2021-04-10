@@ -215,11 +215,24 @@ open http://localhost/demo/
 
 ## Launching
 
-Create trigger resources: event listener, trigger and ingress:
+Create trigger resources: event listener, trigger:
 
 ```sh
 kubectl create -f tekton/eventlistener.yaml
 kubectl create -f tekton/trigger.yaml
+```
+
+Enabled the OCI bundles feature in pipelines:
+
+```sh
+kubectl edit cm/feature-flags -n tekton-pipelines
+```
+
+Push our pipelines to a bundle:
+
+```sh
+tkn-dev bundle push uk.icr.io/tekton/zero2cd-pipeline:1.0 -f tekton/pipeline.yaml
+tkn-dev bundle push uk.icr.io/tekton/zero2cd-pipeline:2.0 -f tekton/pipeline2.yaml
 ```
 
 Run the smee client to receive events from the smee channel configured

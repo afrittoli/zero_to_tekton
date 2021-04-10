@@ -134,6 +134,8 @@ kubectl create -f tekton/rbac.yaml
 if [ -f tekton/.secrets/icr.yaml ]; then
   kubectl create -f tekton/.secrets/icr.yaml || true
   kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "all-icr-io"}]}' || true
+  kubectl create -f tekton/.secrets/icr.yaml -n tekton-pipelines || true
+  kubectl patch serviceaccount tekton-pipelines-controller -n tekton-pipelines -p '{"imagePullSecrets": [{"name": "all-icr-io"}]}' || true
 fi
 if [ -f tekton/.secrets/config.json ]; then
   kubectl create secret generic regcred \
