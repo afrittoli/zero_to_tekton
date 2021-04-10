@@ -10,6 +10,9 @@ spec:
     - name: revision
       type: string
       default: main
+    - name: target
+      type: string
+      default: demo
   workspaces:
     - name: source
     - name: dockerconfig
@@ -21,6 +24,9 @@ spec:
     - name: image-sha
       description: the sha of the target container image
       value: $(tasks.build.results.IMAGE-DIGEST)
+    - name: app-url
+      description: the URL to reach the deployed app
+      value: $(tasks.deploy.results.url)
   tasks:
     - name: clone
       taskRef:
@@ -53,6 +59,12 @@ spec:
         params:
           - name: image
             type: string
+          - name: target
+            type: string
+            description: the suffix of the service and deployment (cnd-<suffix>)
+        results:
+          - name: url
+            description: the URL where the app is deployed to
         steps:
           - name: deploy
             image: docker.io/bitnami/kubectl@sha256:792e0aaabee6c51d734b5d3b150ba990d6106c4c081731d8570c1b9afe0c52d9
@@ -61,16 +73,52 @@ spec:
               set -ex
 
               # Try to create a deployment, in case it's our first run
-              kubectl create deployment cnd-demo --image $(params.image) || true
+              kubectl create deployment cnd-$(params.target) --image $(params.image) || true
 
               # Update the deployment, rollout new image
-              kubectl set image deployment/cnd-demo *=$(params.image)
+              kubectl set image deployment/cnd-$(params.target) *=$(params.image)
 
               # Create a service if it doesn't exists yet
-              kubectl expose deployment/cnd-demo --port 8080 --target-port 80 || true
+              kubectl expose deployment/cnd-$(params.target) --port 8080 --target-port 80 || true
 
               # Make sure we run at least two pods
-              kubectl scale --replicas=2 deployment/cnd-demo
+              kubectl scale --replicas=2 deployment/cnd-$(params.target)
+
+          - name: ingress
+            image: docker.io/bitnami/kubectl@sha256:792e0aaabee6c51d734b5d3b150ba990d6106c4c081731d8570c1b9afe0c52d9
+            script: |
+              #!/bin/bash
+              set -ex
+
+              if [ "$(params.target)" == "demo" ]; then
+                printf "http://localhost/demo" > $(results.url.path)
+              else
+                # For the non-default deployment, create an Ingress (unless it exists already)
+                cat <<EOF | kubectl create -f - || true
+              apiVersion: networking.k8s.io/v1
+              kind: Ingress
+              metadata:
+                name: cnd-$(params.target)
+                annotations:
+                  nginx.ingress.kubernetes.io/rewrite-target: /\$2
+              spec:
+                rules:
+                - http:
+                    paths:
+                    - path: /ci-$(params.target)(/|$)(.*)
+                      pathType: Prefix
+                      backend:
+                        service:
+                          name: cnd-$(params.target)
+                          port:
+                            number: 8080
+              EOF
+
+                # Write the result
+                printf "http://localhost/ci-$(params.target)" > $(results.url.path)
+              fi
       params:
         - name: image
           value: $(params.registry)/zero2tekton@$(tasks.build.results.IMAGE-DIGEST)
+        - name: target
+          value: $(params.target)
