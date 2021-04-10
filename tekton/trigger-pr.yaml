@@ -1,23 +1,26 @@
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: Trigger
 metadata:
-  name: github-push
+  name: github-pr
 spec:
   interceptors:
     - github:
         eventTypes:
-          - push
+          - pull_request
     - cel:
         filter: >-
           header.match('X-GitHub-Hook-Installation-Target-ID', '108936') &&
-          body.pull_request.base.ref == 'main'
+          body.action in ['opened', 'synchronize', 'reopened']
   bindings:
   - name: revision
-    value: $(body.after)
+    value: $(body.pull_request.head.sha)
+  - name: prNumber
+    value: $(body.pull_request.number)
   template:
     spec:
       params:
       - name: revision
+      - name: prNumber
       resourceTemplates:
       - apiVersion: "tekton.dev/v1beta1"
         kind: PipelineRun
@@ -30,6 +33,8 @@ spec:
           params:
             - name: revision
               value: $(tt.params.revision)
+            - name: target
+              value: $(tt.params.prNumber)
           workspaces:
             - name: source
               volumeClaimTemplate:
