@@ -2,6 +2,8 @@ apiVersion: triggers.tekton.dev/v1alpha1
 kind: Trigger
 metadata:
   name: github-pr
+  labels:
+    event-from: github
 spec:
   interceptors:
     - github:
@@ -14,18 +16,26 @@ spec:
   bindings:
   - name: revision
     value: $(body.pull_request.head.sha)
-  - name: prNumber
+  - name: pr_number
     value: $(body.pull_request.number)
+  - name: pr_html_url
+    value: $(body.pull_request.html_url)
   template:
     spec:
       params:
       - name: revision
-      - name: prNumber
+      - name: pr_number
+      - name: pr_html_url
       resourceTemplates:
       - apiVersion: "tekton.dev/v1beta1"
         kind: PipelineRun
         metadata:
             generateName: "zero2cd-"
+            labels:
+              ci.tekton.dev/check-name: zero2cd
+            annotations:
+              ci.tekton.dev/pr-number: $(tt.params.pr_number)
+              ci.tekton.dev/pr-url: $(tt.params.pr_html_url)
         spec:
           pipelineRef:
             name: zero2cd
@@ -34,7 +44,7 @@ spec:
             - name: revision
               value: $(tt.params.revision)
             - name: target
-              value: $(tt.params.prNumber)
+              value: $(tt.params.pr_number)
           workspaces:
             - name: source
               volumeClaimTemplate:

@@ -1,0 +1,93 @@
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: tekton-events
+spec:
+  serviceAccountName: tekton-ci-workspace-listener
+  triggers:
+  - name: tekton-event-start-github
+    interceptors:
+      - cel:
+          filter: >-
+            header.match('ce-type', 'dev.tekton.event.pipelinerun.started.v1') &&
+            'ci.tekton.dev/check-name' in body.pipelineRun.metadata.labels &&
+            body.pipelineRun.metadata.labels['triggers.tekton.dev/eventlistener'] in ['tekton-ci']
+    bindings:
+    - name: pr_number
+      value: $(body.pipelineRun.metadata.annotations.ci\.tekton\.dev/pr-number)
+    - name: pr_html_url
+      value: $(body.pipelineRun.metadata.annotations.ci\.tekton\.dev/pr-url)
+    - name: run_name
+      value: $(body.pipelineRun.metadata.name)
+    template:
+      spec:
+        params:
+        - name: pr_number
+        - name: pr_html_url
+        - name: run_name
+        resourceTemplates:
+        - apiVersion: tekton.dev/v1beta1
+          kind: TaskRun
+          metadata:
+            generateName: github-add-comment-to-pr-
+          spec:
+            taskRef:
+              kind: Task
+              name: github-add-comment
+            params:
+              - name: REQUEST_URL
+                value: $(tt.params.pr_html_url)
+              - name: COMMENT_TAG
+                value: zero2cd
+              - name: REPLACE
+                value: "true"
+              - name: COMMENT_OR_FILE
+                value: >-
+                  Build [$(tt.params.run_name)](http://localhost/dashboard/#/namespaces/default/pipelineruns/$(tt.params.run_name)) started.
+  - name: tekton-event-end-github
+    interceptors:
+      - cel:
+          filter: >-
+            (header.match('ce-type', 'dev.tekton.event.pipelinerun.successful.v1') ||
+            header.match('ce-type', 'dev.tekton.event.pipelinerun.failed.v1')) &&
+            'ci.tekton.dev/check-name' in body.pipelineRun.metadata.labels &&
+            body.pipelineRun.metadata.labels['triggers.tekton.dev/eventlistener'] in ['tekton-ci']
+          overlays:
+            - key: result
+              expression: header['Ce-Type'][0].split('.')[4]
+    bindings:
+    - name: pr_number
+      value: $(body.pipelineRun.metadata.annotations.ci\.tekton\.dev/pr-number)
+    - name: pr_html_url
+      value: $(body.pipelineRun.metadata.annotations.ci\.tekton\.dev/pr-url)
+    - name: run_name
+      value: $(body.pipelineRun.metadata.name)
+    - name: result
+      value: $(extensions.result)
+    template:
+      spec:
+        params:
+        - name: pr_number
+        - name: pr_html_url
+        - name: run_name
+        - name: result
+        resourceTemplates:
+        - apiVersion: tekton.dev/v1beta1
+          kind: TaskRun
+          metadata:
+            generateName: github-add-comment-to-pr-
+          spec:
+            taskRef:
+              kind: Task
+              name: github-add-comment
+            params:
+              - name: REQUEST_URL
+                value: $(tt.params.pr_html_url)
+              - name: COMMENT_TAG
+                value: zero2cd
+              - name: REPLACE
+                value: "true"
+              - name: COMMENT_OR_FILE
+                value: >-
+                  Build [$(tt.params.run_name)](http://localhost/dashboard/#/namespaces/default/pipelineruns/$(tt.params.run_name)) was [$(tt.params.result)](http://localhost/ci-$(tt.params.pr_number)/).

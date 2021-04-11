@@ -162,6 +162,9 @@ spec:
               number: 9097
 EOF
 
+# Start a background script that updates the github token
+./tekton/githubapp.sh &
+
 echo "===> Install Tekton"
 
 echo kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/previous/${TEKTON_PIPELINE_VERSION}/release.yaml

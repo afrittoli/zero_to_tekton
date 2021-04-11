@@ -2,6 +2,8 @@ apiVersion: triggers.tekton.dev/v1alpha1
 kind: Trigger
 metadata:
   name: github-push
+  labels:
+    event-from: github
 spec:
   interceptors:
     - github:
