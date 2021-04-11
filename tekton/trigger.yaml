@@ -10,7 +10,7 @@ spec:
     - cel:
         filter: >-
           header.match('X-GitHub-Hook-Installation-Target-ID', '108936') &&
-          body.refs == 'refs/heads/main'
+          body.ref == 'refs/heads/main'
   bindings:
   - name: revision
     value: $(body.after)
