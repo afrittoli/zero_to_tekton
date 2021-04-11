@@ -177,7 +177,7 @@ pod. They share data through the PVC:
 kubectl get pod -l tekton.dev/pipelineRun=zero2cd-run-<xyz>
 ```
 
-Try and browse the `PipelineRun` via the [dashboard](http://localhost:9197/#/namespaces/default/pipelineruns/).
+Try and browse the `PipelineRun` via the [dashboard](http://localhost/dashboard/#/namespaces/default/pipelineruns/).
 
 ### Deploy and update the built image
 
