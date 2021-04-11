@@ -255,3 +255,25 @@ tkn pr list --label triggers.tekton.dev/trigger=github-push
 Have a look at the trigger definition.
 We use a CEL filter to filter based on headers and body.
 One can build custom interceptors to add content or implement special filtering. When expression could be used to build and deploy only when changes were made to the container image.
+
+## Notifications
+
+We can trigger pipelines automatically, it would be to receive notifications about what happened.
+For instance we could have a notification in a slack channel in case the deployment failed. Or we could run the build against pull requests, and notify the users about the status of the build.
+
+To achieve this we can use `CloudEvents`. Tekton natively supports `CloudEvents`, which can be enabled by configuring a sink, and which are sent at every stage of `*Run` object lifecycle.
+
+Install a new event listener dedicated to handle Tekton own events, along with a trigger to handle pull request events and the task to add GitHub comments.
+
+```sh
+kubectl create -f tekton/eventlistener-events.yaml
+kubectl create -f tekton/trigger-pr.yaml
+tkn hub install task github-add-comment
+```
+
+Configure pipeline to send events to the newly created sink:
+
+```
+kubectl get service
+kubectl patch cm config-defaults -n tekton-pipelines -p '{"data": {"default-cloud-events-sink": "http://el-tekton-events.default:8080"}}'
+```
