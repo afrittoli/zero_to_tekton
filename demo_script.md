@@ -95,8 +95,8 @@ kubectl config use-context kind-tekton
 ### Tasks and TaskRuns
 
 - Details: `tkn task describe git-clone`
-- Run: `tkn task start git-clone -p url=https://github.com/afrittoli/zero_to_tekton -p revision=main`
-- Logs: `tkn tr logs`
+- Run: `tkn task start git-clone -p url=https://github.com/afrittoli/zero_to_tekton -p revision=main --workspace name=output,emptyDir=""`
+- Logs: `tkn tr logs -f`
 - Run Details: `tkn tr describe git-clone-run-<xyz>`
 
 Notice the results in the `TaskRun`.

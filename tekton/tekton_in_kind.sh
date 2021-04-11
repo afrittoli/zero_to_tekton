@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e -o pipefail
-set -x
 
 declare TEKTON_PIPELINE_VERSION TEKTON_TRIGGERS_VERSION TEKTON_DASHBOARD_VERSION
 
@@ -63,6 +62,7 @@ if [ -z "$TEKTON_DASHBOARD_VERSION" ]; then
   TEKTON_DASHBOARD_VERSION=$(get_latest_release tektoncd/dashboard)
 fi
 
+echo "===> Creating a Kind Cluster"
 # create registry container unless it already exists
 reg_name='kind-registry'
 reg_port='5000'
@@ -111,6 +111,11 @@ for image in $(cat tekton/image-cache.txt) ; do
   kind load docker-image $image --name ${KIND_CLUSTER_NAME} &> tekton/cache.log
 done &
 
+# connect the registry to the cluster network
+# (the network may already be connected)
+docker network connect "kind" "${reg_name}" || true
+
+echo "===> Deploying the Ingress controller"
 # Deploy the ingress
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/kind/deploy.yaml
 kubectl wait --namespace ingress-nginx \
@@ -118,17 +123,7 @@ kubectl wait --namespace ingress-nginx \
   --selector=app.kubernetes.io/component=controller \
   --timeout=120s
 
-# connect the registry to the cluster network
-# (the network may already be connected)
-docker network connect "kind" "${reg_name}" || true
-
-# Install Tekton Pipeline, Triggers and Dashboard
-kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/previous/${TEKTON_PIPELINE_VERSION}/release.yaml
-kubectl apply -f https://storage.googleapis.com/tekton-releases/triggers/previous/${TEKTON_TRIGGERS_VERSION}/release.yaml
-kubectl wait --for=condition=Established --timeout=30s crds/clusterinterceptors.triggers.tekton.dev || true # Starting from triggers v0.13
-kubectl apply -f https://storage.googleapis.com/tekton-releases/triggers/previous/${TEKTON_TRIGGERS_VERSION}/interceptors.yaml || true
-kubectl apply -f https://github.com/tektoncd/dashboard/releases/download/${TEKTON_DASHBOARD_VERSION}/tekton-dashboard-release.yaml
-
+echo "===> RBAC and secrets"
 # Install some basic RBAC and secrets needed by triggers
 kubectl create -f tekton/rbac.yaml
 if [ -f tekton/.secrets/icr.yaml ]; then
@@ -143,10 +138,6 @@ if [ -f tekton/.secrets/config.json ]; then
     --from-file=.dockerconfigjson=tekton/.secrets/config.json \
     --type=kubernetes.io/dockerconfigjson || true
 fi
-
-# Wait until all pods are ready
-sleep 10
-kubectl wait -n tekton-pipelines --for=condition=ready pods --all --timeout=120s
 
 cat <<EOF | kubectl create -f -
 apiVersion: networking.k8s.io/v1
@@ -169,4 +160,24 @@ spec:
               number: 9097
 EOF
 
-echo “Tekton Dashboard available at http://localhost/dashboard/”
+echo "===> Install Tekton"
+
+echo kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/previous/${TEKTON_PIPELINE_VERSION}/release.yaml
+echo kubectl apply -f https://storage.googleapis.com/tekton-releases/triggers/previous/${TEKTON_TRIGGERS_VERSION}/release.yaml
+echo kubectl apply -f https://github.com/tektoncd/dashboard/releases/download/${TEKTON_DASHBOARD_VERSION}/tekton-dashboard-release.yaml
+
+# Install Tekton Pipeline, Triggers and Dashboard
+kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/previous/${TEKTON_PIPELINE_VERSION}/release.yaml
+kubectl apply -f https://storage.googleapis.com/tekton-releases/triggers/previous/${TEKTON_TRIGGERS_VERSION}/release.yaml
+kubectl apply -f https://github.com/tektoncd/dashboard/releases/download/${TEKTON_DASHBOARD_VERSION}/tekton-dashboard-release.yaml
+# Wait until all pods are ready
+
+if [ -f tekton/.secrets/icr.yaml ]; then
+  kubectl create -f tekton/.secrets/icr.yaml -n tekton-pipelines || true
+  kubectl patch serviceaccount tekton-pipelines-controller -n tekton-pipelines -p '{"imagePullSecrets": [{"name": "all-icr-io"}]}' || true
+fi
+
+sleep 10
+kubectl wait -n tekton-pipelines --for=condition=ready pods --all --timeout=120s
+
+echo Tekton Dashboard available at http://localhost/dashboard/
