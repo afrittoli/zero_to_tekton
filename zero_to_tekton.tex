@@ -47,7 +47,7 @@
   {%
   \tableofcontents
   }%
-  {toc}
+  {}
   \frametitle{Agenda}
 \end{lpicrblack}
 
@@ -130,80 +130,166 @@
   % Knative, Tekton and the CDF
 \end{lgrayrwhiteframe}
 
-\section[From 0 to CD]{From 0 to CD}
-\begin{sectionwithpicrx}[pierre-bamin--ltjzTfhpCI-unsplash.jpg]{Photo by \href{https://unsplash.com/@bamin}{\underline{Pierre Bamin}}, CC0}
-\end{sectionwithpicrx}
+\section[From 0 to CD]{From 0 to CD\\\ldots step by step}
+\begin{sectionwithpic}[cat-walking-on-stairs.jpg]{Public domain photo, CC0}
+\end{sectionwithpic}
 
-\begin{blackframe}
-  \frametitle{Install}
+\begin{lpicrblack}[nadi-whatisdelirium-fZ8uf_L52wg-unsplash.jpg]{%
+  Photo by \href{https://unsplash.com/@whatisdelirium}{\underline{Nadi Whatisdelirium}}, CC0
+  }%
+  {%
   \begin{itemize}
-    \item Install
-    \item Operator
-    \item Nightly
-    \item Multi-arch
+    \item One-liner (almost)
+    \item Tekton Operator (\href{https://operatorhub.io/operator/tektoncd-operator}{\underline{OperatorHub}})
+    \item Nightly Build (Operator too)
+    \item Helm (by CDF)\\~
+    \item Multi-architecture (amd64, s390x, ppc64le, arm64)
   \end{itemize}
-\end{blackframe}
+  }%
+  {0.42}%
+  \frametitle{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Install}
+\end{lpicrblack}
 
-\begin{blackframe}
+\begin{lgrayframerpic}[thom-milkovic-FTNGfpYCpGM-unsplash.jpg]{%
+  Photo by \href{https://unsplash.com/@thommilkovic}{\underline{Thom Milkovic}}, CC0
+  }%
+  {%
+  \begin{itemize}
+    \item Catalog \& Hub
+    \item Tasks \& Pipelines
+    \item Parameters, Results \& Workspaces
+    \item OCI Bundles
+  \end{itemize}
+  }%
+  {0.48}
   \frametitle{Authoring}
-  \begin{itemize}
-    \item pipeline
-    \item catalog
-    \item hub
-    \item params, results, workspaces <- docs on website
-  \end{itemize}
-\end{blackframe}
+\end{lgrayframerpic}
 
-\begin{blackframe}
-  \frametitle{Watching}
+\begin{lpicrblack}[john-yunker-Z9rKuPEU6Uc-unsplash.jpg]{%
+  Photo by \href{https://unsplash.com/@jyunker}{\underline{John Yunker}}, CC0
+  }%
+  {%
   \begin{itemize}
-    \item kubectl
-    \item tkn
-    \item Dashboard
-    \item runtime aspects
+    \item Running Tasks \& Pipelines
   \end{itemize}
-\end{blackframe}
+  ~\\
+  \begin{itemize}
+    \item Tekton Dashboard
+    \item \code{tkn}, \code{kubectl}
+    \item Pods, Volumes \& Events
+  \end{itemize}
+  }%
+  {0.50}%
+  \frametitle{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Watching}
+\end{lpicrblack}
 
-\begin{blackframe}
+
+\begin{lgrayframerpic}[pouncing-cat.png]{Public domain photo, CC0}%
+  {%
+  \begin{itemize}
+    \item Tekton Triggers
+    \item Setting up a\\Webhook
+    \item Filtering with\\Interceptors
+    \item Filtering with\\When Expressions
+  \end{itemize}
+  }%
+  {0.30}
   \frametitle{Launching}
-  \begin{itemize}
-    \item triggers
-    \item setup a github webhook
-    \item run a build on push
-    \item filtering: CEL, custom, when expressions
-  \end{itemize}
-\end{blackframe}
+\end{lgrayframerpic}
 
-\begin{blackframe}
-  \frametitle{Monitoring}
+\begin{lpicrblack}[sereja-ris-g3B53PbBfwU-unsplash.png]{%
+  Photo by \href{https://unsplash.com/@serejaris}{\underline{Sereja Ris}}, CC0
+  }%
+  {%
   \begin{itemize}
-    \item unattended execution, we need monitoring
-    \item event
-    \item cloudevents
-    \item notifications (github, slack)
+    \item Unattended Execution
+    \item Events, \code{CloudEvents}
+    \item Notifications:\\GitHub, Slack and more
+    \item Monitoring \& Measuring
   \end{itemize}
-\end{blackframe}
+  ~\\
+  \begin{itemize}
+    \item Tekton Results
+    \item Resource Cleanups (WIP)
+  \end{itemize}
+  }%
+  {0.65}%
+  \frametitle{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Monitoring \& Cleanup}
+\end{lpicrblack}
 
-\begin{blackframe}
-  \frametitle{Experimental}
+\begin{2columnsframe}{Experiments \& Dogfooding}%
+  {%
   \begin{itemize}
-    \item loops
-    \item wait
-    \item CELRun / pip (?)
+    \item Custom Tasks:\\
+          Loops \& Iterations \\
+          Pipeline in Pipelines
+          Wait, CEL Run
   \end{itemize}
-\end{blackframe}
-
-\begin{blackframe}
-  \frametitle{Cleanup}
+  ~\\
+  ~\\
+  ~\\
+  ~\\
   \begin{itemize}
-    \item execution history
-    \item results
+    \item Custom Interceptors (GitHub)
+    \item DSL, SDK, Notifiers
   \end{itemize}
-\end{blackframe}
+  }{%
+  \begin{itemize}
+    \item Using Tekton to CD Tekton
+    \item Release, GitOps, CI \\~
+  \end{itemize}
+  ~\\
+  ~\\
+  ~\\
+  ~\\
+  \begin{itemize}
+    \item From Experiments to Feature
+    \item Source of examples
+    \item Bug discovery, feature requests
+  \end{itemize}
+  }
+\end{2columnsframe}
 
 \section[Roadmap]{Roadmap}
 \begin{sectionwithpic}[pexels-ray-bilcliff-1509237.jpg]{Photo by \href{https://www.pexels.com/@raybilcliff}{\underline{Ray Bilcliff}}, CC0}
 \end{sectionwithpic}
+
+
+\begin{2columnsframe}{Roadmap \& Vision}%
+  {%
+  Mission:
+  \begin{itemize}
+    \item Be the industry-standard,\\
+          cloud-native CI/CD platform \\
+          components and ecosystems
+  \end{itemize}
+  ~\\
+  ~\\
+  ~\\
+  Vision:
+  \begin{itemize}
+    \item Tekton API conformance across\\
+          as many CI/CD platforms as possible
+  \end{itemize}
+  }{%
+  Vision:
+  \begin{itemize}
+    \item A rich catalog of high quality,\\
+          reusable Tasks which work\\
+          with Tekton conformant systems
+  \end{itemize}
+  ~\\
+  ~\\
+  ~\\
+  Roadmap 2021:
+  \begin{itemize}
+    \item Towards GA
+    \item LTS Policies
+    \item User stories, Documentation
+    \item Dogfooding
+  \end{itemize}
+  }
+\end{2columnsframe}
 
 \begin{blackframe}
   \frametitle{TEP (optional)}
@@ -211,24 +297,6 @@
     \item Design principles
     \item TEP process
     \item TEP table
-  \end{itemize}
-\end{blackframe}
-
-\begin{blackframe}
-  \frametitle{Dogfooding (optional)}
-  \begin{itemize}
-    \item Using Tekton for Tekton
-    \item Source of examples
-    \item Source of bug discovery, feature requests
-  \end{itemize}
-\end{blackframe}
-
-\begin{blackframe}
-  \frametitle{Roadmap}
-  \begin{itemize}
-    \item Towards v1
-    \item What's coming in 2021
-    \item Release processes and cadence
   \end{itemize}
 \end{blackframe}
 
@@ -244,13 +312,14 @@
     \item \normalsize Tekton community: \href{https://github.com/tektoncd/community}{github.com/tektoncd/community} \\
   \end{itemize}
   \begin{itemize}
-    \item Slides: \href{https://github.com/afrittoli/zero_to_tekton/blob/scd2021/scaling_pipelines_with_tekton.pdf}{github.com/afrittoli/zero\_to\_tekton}
+    \item Slides: \href{https://github.com/afrittoli/zero_to_tekton/blob/main/zero_to_tekton.pdf}{github.com/afrittoli/zero\_to\_tekton}
     \item Tekton: \href{https://tekton.dev}{tekton.dev}
+    \item Tekton Docs: \href{https://tekton.dev/docs}{tekton.dev/docs}
     \item Tekton on GitHub: \href{https://github.com/tektoncd}{github.com/tektoncd}
-    \item Tekton Results: \href{https://github.com/tektoncd/results}{github.com/tektoncd/results}
     \item Tekton Hub: \href{https://hub.tekton.dev}{hub.tekton.dev}
-    \item Performance TEP: \href{https://github.com/tektoncd/community/blob/master/teps/0036-start-measuring-tekton-pipelines-performance.md}{TEP-0036}
-    \item Metrics TEP: \href{https://github.com/tektoncd/community/blob/master/teps/0006-tekton-metrics.md}{TEP-0006}
+    \item Tekton on Operator Hub:\\\href{https://https://operatorhub.io/operator/tektoncd-operator}{https://operatorhub.io/operator/tektoncd-operator}
+    \item Tekton Results: \href{https://github.com/tektoncd/results}{github.com/tektoncd/results}
+    \item Tekton Enhancement Proposals (TEPs): \href{https://github.com/tektoncd/community/tree/main/teps\#tekton-enhancement-proposals-teps}{github.com/tektoncd/community/tree/main/teps}
   \end{itemize}
   \begin{textblock*}{0.13\paperwidth}(0.73\paperwidth,0.65\paperheight)
     \includesvg[width=0.13\paperwidth]{img/tekton-icon-color.svg}

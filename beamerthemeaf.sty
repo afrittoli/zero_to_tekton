@@ -15,6 +15,8 @@
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{blocks}[rounded=false, shadow=false]
 
+\def\code#1{\texttt{#1}}
+
 % Custom Frames
 \newenvironment{blackframe}
 {
@@ -58,6 +60,29 @@
 }
 {
   \end{frame}
+}
+
+\newenvironment<>{lgrayframerpic}[4][]
+{
+  \setbeamercolor{background canvas}{bg=mylightgray}
+  \setbeamercolor*{frametitle}{fg=myblack}
+  \settextcolour{myblack}
+  \setblacklogofootline
+  \begin{frame}[c]
+    \begin{textblock*}{0.4\paperwidth}(#4\paperwidth,0\paperheight)
+      \includegraphics[height=\paperheight]{img/#1}
+    \end{textblock*}
+    \begin{textblock*}{0.4\paperwidth}(#45\paperwidth,0.97\paperheight)
+      \begin{beamercolorbox}[wd=0.4\paperwidth]{photolicense}
+        \usebeamerfont{photolicense}#2
+      \end{beamercolorbox}%
+      \vfill
+    \end{textblock*}
+    #3
+}
+{
+  \end{frame}
+  \setwhitelogofootline{}
 }
 
 \newenvironment{lblackrwhiteframe}
@@ -266,7 +291,7 @@
       \begin{beamercolorbox}[wd=0.4\paperwidth]{section page header}%
         \usebeamerfont{section name}%
           \begin{flushright}%
-            \insertsection~~~~~~~~~~~~~%
+            \insertsection%
           \end{flushright}%
       \end{beamercolorbox}%
     \end{textblock*}
@@ -310,7 +335,7 @@
   \setbeamercolor*{frametitle}{fg=white}
   \settextcolour{white}
   \setbeamertemplate{background}{
-    \includegraphics[width=0.5\linewidth]{img/#1}
+    \includegraphics[height=\paperheight]{img/#1}
   }
   \setwhitelogofootline{notext}
   \begin{frame}
@@ -321,14 +346,14 @@
       \vfill
     \end{textblock*}
     \ifstrempty{#4}{
+      \leftskip=0.55\paperwidth
+      #3
+    }{
       \begin{columns}
-        \column{0.52\paperwidth}
+        \column{#4\paperwidth}
         \column{0.48\paperwidth}
         #3
       \end{columns}
-    }{
-      \leftskip=0.55\paperwidth
-      #3
     }
 }
 {
