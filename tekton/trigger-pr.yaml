@@ -39,7 +39,7 @@ spec:
         spec:
           pipelineRef:
             name: zero2cd
-            bundle: uk.icr.io/tekton/zero2cd-pipeline@sha256:54224a5b27f20b39df7a9a8414794d166b50b3166a507fcebb067c217ace78b0
+            bundle: uk.icr.io/tekton/zero2cd-pipeline:2.0
           params:
             - name: revision
               value: $(tt.params.revision)
