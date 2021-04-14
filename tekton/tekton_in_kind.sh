@@ -167,6 +167,10 @@ EOF
 
 echo "===> Install Tekton"
 
+echo export TEKTON_PIPELINE_VERSION=$TEKTON_PIPELINE_VERSION
+echo export TEKTON_TRIGGERS_VERSION=$TEKTON_TRIGGERS_VERSION
+echo export TEKTON_DASHBOARD_VERSION=$TEKTON_DASHBOARD_VERSION
+
 # Install Tekton Pipeline, Triggers and Dashboard
 # kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/previous/${TEKTON_PIPELINE_VERSION}/release.yaml
 # kubectl apply -f https://storage.googleapis.com/tekton-releases/triggers/previous/${TEKTON_TRIGGERS_VERSION}/release.yaml
