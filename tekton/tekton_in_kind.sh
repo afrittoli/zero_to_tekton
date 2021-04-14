@@ -137,6 +137,8 @@ if [ -f tekton/.secrets/config.json ]; then
     --type=kubernetes.io/dockerconfigjson || true
 fi
 
+kubectl create namespace tekton-pipelines
+
 cat <<EOF | kubectl create -f -
 apiVersion: networking.k8s.io/v1
 kind: Ingress
