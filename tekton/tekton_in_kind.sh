@@ -129,8 +129,6 @@ kubectl create -f tekton/rbac.yaml
 if [ -f tekton/.secrets/icr.yaml ]; then
   kubectl create -f tekton/.secrets/icr.yaml || true
   kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "all-icr-io"}]}' || true
-  kubectl create -f tekton/.secrets/icr.yaml -n tekton-pipelines || true
-  kubectl patch serviceaccount tekton-pipelines-controller -n tekton-pipelines -p '{"imagePullSecrets": [{"name": "all-icr-io"}]}' || true
 fi
 if [ -f tekton/.secrets/config.json ]; then
   kubectl create secret generic regcred \
@@ -167,22 +165,17 @@ EOF
 
 echo "===> Install Tekton"
 
-echo kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/previous/${TEKTON_PIPELINE_VERSION}/release.yaml
-echo kubectl apply -f https://storage.googleapis.com/tekton-releases/triggers/previous/${TEKTON_TRIGGERS_VERSION}/release.yaml
-echo kubectl apply -f https://github.com/tektoncd/dashboard/releases/download/${TEKTON_DASHBOARD_VERSION}/tekton-dashboard-release.yaml
-
 # Install Tekton Pipeline, Triggers and Dashboard
-kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/previous/${TEKTON_PIPELINE_VERSION}/release.yaml
-kubectl apply -f https://storage.googleapis.com/tekton-releases/triggers/previous/${TEKTON_TRIGGERS_VERSION}/release.yaml
-kubectl apply -f https://github.com/tektoncd/dashboard/releases/download/${TEKTON_DASHBOARD_VERSION}/tekton-dashboard-release.yaml
-# Wait until all pods are ready
+# kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/previous/${TEKTON_PIPELINE_VERSION}/release.yaml
+# kubectl apply -f https://storage.googleapis.com/tekton-releases/triggers/previous/${TEKTON_TRIGGERS_VERSION}/release.yaml
+# kubectl apply -f https://github.com/tektoncd/dashboard/releases/download/${TEKTON_DASHBOARD_VERSION}/tekton-dashboard-release.yaml
 
-if [ -f tekton/.secrets/icr.yaml ]; then
-  kubectl create -f tekton/.secrets/icr.yaml -n tekton-pipelines || true
-  kubectl patch serviceaccount tekton-pipelines-controller -n tekton-pipelines -p '{"imagePullSecrets": [{"name": "all-icr-io"}]}' || true
-fi
+# if [ -f tekton/.secrets/icr.yaml ]; then
+#   kubectl create -f tekton/.secrets/icr.yaml -n tekton-pipelines || true
+#   kubectl patch serviceaccount tekton-pipelines-controller -n tekton-pipelines -p '{"imagePullSecrets": [{"name": "all-icr-io"}]}' || true
+# fi
 
-sleep 10
-kubectl wait -n tekton-pipelines --for=condition=ready pods --all --timeout=120s
+# # Wait until all pods are ready
+# kubectl wait -n tekton-pipelines --for=condition=ready pods --all --timeout=120s
 
-echo Tekton Dashboard available at http://localhost/dashboard/
+echo Tekton Dashboard available at http://localhost/dashboard/ after installation

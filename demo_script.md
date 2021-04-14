@@ -23,9 +23,28 @@ iks cluster config --cluster tekton-cnd # Update the token in the context
 - Deploy a kind cluster with 3 nodes
 - Deploy latest pipeline, triggers and dashboard
 
+Setup the Kind Cluster:
+
 ```sh
 # Source: https://github.com/tektoncd/plumbing/blob/main/hack/tekton_in_kind.sh
 ./tekton/tekton_in_kind.sh
+```
+
+Install Tekton:
+
+```sh
+# Install Tekton Pipeline, Triggers and Dashboard
+kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/previous/${TEKTON_PIPELINE_VERSION}/release.yaml
+kubectl apply -f https://storage.googleapis.com/tekton-releases/triggers/previous/${TEKTON_TRIGGERS_VERSION}/release.yaml
+kubectl apply -f https://github.com/tektoncd/dashboard/releases/download/${TEKTON_DASHBOARD_VERSION}/tekton-dashboard-release.yaml
+
+if [ -f tekton/.secrets/icr.yaml ]; then
+  kubectl create -f tekton/.secrets/icr.yaml -n tekton-pipelines || true
+  kubectl patch serviceaccount tekton-pipelines-controller -n tekton-pipelines -p '{"imagePullSecrets": [{"name": "all-icr-io"}]}' || true
+fi
+
+# Wait until all pods are ready
+kubectl wait -n tekton-pipelines --for=condition=ready pods --all --timeout=120s
 ```
 
 ### Setup in IBM Cloud with the Tekton Operator
