@@ -258,7 +258,7 @@ Run the smee client to receive events from the smee channel configured
 in the GitHub App:
 
 ```sh
-smee -u https://smee.io/uIq3Yv0K0PRZxqMB --target http://localhost/ci &
+smee -u https://smee.io/uIq3Yv0K0PRZxqMB --target http://localhost/ci/ &
 ```
 
 Make a change to the demo page.
