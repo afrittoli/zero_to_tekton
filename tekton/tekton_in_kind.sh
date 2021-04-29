@@ -148,7 +148,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /\$2
     nginx.ingress.kubernetes.io/configuration-snippet: |
-      rewrite ^(/[a-z1-9\-]*)$ $1/ redirect;
+      rewrite ^(/[a-z1-9\-]*)$ \$1/ redirect;
 spec:
   rules:
   - http:
