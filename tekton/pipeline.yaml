@@ -18,9 +18,9 @@ spec:
     - name: git-sha
       description: the git sha that has been built
       value: $(tasks.clone.results.commit)
-    - name: image-sha
-      description: the sha of the target container image
-      value: $(tasks.build.results.IMAGE-DIGEST)
+    # - name: image-sha
+    #   description: the sha of the target container image
+    #   value: $(tasks.build.results.IMAGE-DIGEST)
   tasks:
     - name: clone
       taskRef:
@@ -33,17 +33,29 @@ spec:
       workspaces:
         - name: output
           workspace: source
-    - name: build
+    - name: lint
       runAfter: ['clone']
       taskRef:
-        name: kaniko
+        name: pylint
       params:
-        - name: IMAGE
-          value: $(params.registry)/zero2tekton:$(tasks.clone.results.commit)
-        - name: CONTEXT
-          value: images/demo
+        - name: args
+          value: ["-r", "y"]
+        - name: path
+          value: app/app
       workspaces:
         - name: source
           workspace: source
-        - name: dockerconfig
-          workspace: dockerconfig
+    # - name: build
+    #   runAfter: ['clone']
+    #   taskRef:
+    #     name: kaniko
+    #   params:
+    #     - name: IMAGE
+    #       value: $(params.registry)/zero2tekton:$(tasks.clone.results.commit)
+    #     - name: CONTEXT
+    #       value: images/demo
+    #   workspaces:
+    #     - name: source
+    #       workspace: source
+    #     - name: dockerconfig
+    #       workspace: dockerconfig

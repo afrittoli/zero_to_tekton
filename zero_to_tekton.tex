@@ -205,6 +205,7 @@
     \item Tasks \& Pipelines
     \item Parameters, Results \& Workspaces
     \item OCI Bundles
+    \item Signed Tasks and Pipelines (WIP)
   \end{itemize}
   ~
   \begin{itemize}
@@ -216,7 +217,26 @@
 \end{lgrayframerpic}
 
 \note{
+  Tekton Tasks and Pipelines are k8s resources, written in YAML.
+  The community maintains a catalog of common tasks that can be used
+  to compose a pipeline. Organisations may maintain their own catalog too.
+  Parameters, workspaces and results represent the interface of both
+  tasks and pipelines.
 
+  Pipelines and Tasks can also be stored in container registries.
+  The Tekton community is working towards making it easy to sign and
+  verify the workflow definitions.
+
+  Show the hub UI, search for a git task
+  Search and install git-clone task via tkn
+  $ tkn hub search git-clone
+  $ tkn hub info task git-clone
+  $ tkn hub install task git-clone
+  $ tkn task describe git-clone
+  $ tkn hub install task pylint
+
+  Install other resources via kubectl
+  $ kubectl create -f tekton/pipeline.yaml
 }
 
 \begin{lpicrblack}[john-yunker-Z9rKuPEU6Uc-unsplash.jpg]{%
