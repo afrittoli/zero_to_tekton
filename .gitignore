@@ -163,3 +163,10 @@ TSWLatexianTemp*
 .DS_Store
 .vscode
 tekton/.secrets
+
+# python
+.venv
+.idea
+
+# tekton
+workspace-template.yaml

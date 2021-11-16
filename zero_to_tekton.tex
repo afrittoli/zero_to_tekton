@@ -12,7 +12,7 @@
 
 
 \title{From Zero to CD with Tekton}
-\date[14 Apr 2021]{14 Apr 2021 | \faTwitter ~@blackchip76 | \faGithub ~afrittoli}
+\date[17 Nov 2021 IBM Community Festival]{17 Nov 2021 | \faTwitter ~@blackchip76 | \faGithub ~afrittoli}
 \author[Andrea Frittoli]{%
   Andrea Frittoli \\
   Developer Advocate \\
@@ -76,32 +76,25 @@
   Maximum Flexibility \\
   }%
   {%
-  Core Projects
+  Projects \\
+  \vspace{0.01\textheight}
   \begin{itemize}
     \item Pipeline
     \item Triggers
-  \end{itemize}
-  \vspace{0.01\textheight}
-  Tooling:
-  \begin{itemize}
-    \item CLI \textit{tkn}
     \item Dashboard
+    \item CLI
+    \item Catalog, Hub
+    \item Results
+    \item Chains
     \item Operator
   \end{itemize}
   }%
   {%
-  Discovery:
-  \begin{itemize}
-    \item Catalog
-    \item Hub
-  \end{itemize}
+  Community \\
+  \vspace{0.03\textheight}
+  More than 150 Companies \\
   \vspace{0.01\textheight}
-  Adds-on:
-  \begin{itemize}
-    \item Results
-    \item Chain
-    \item Experiments
-  \end{itemize}
+  Google, IBM, RedHat, VMWare
   }%
   % \begin{textblock*}{0.13\paperwidth}(0.73\paperwidth,0.65\paperheight)
   %   \includesvg[width=0.13\paperwidth]{img/tekton-icon-color.svg}
@@ -109,30 +102,67 @@
   % A brief into to Tekton
 \end{stripedframe}
 
+\note{
+  Tekton is an open-source framework for creating continuous delivery systems (aka CI/CD).
+  Tekton is built on top of Kubernetes, and it brings all the cloud-native
+  advantages into the CD space: serverless execution, scalability and integration with
+  the impressive ecosystem of cloud native tools for logging, monitoring, policy enforcement
+  and more.
+
+  Tekton has a very small footprint, which makes it easy to get started with it in your minikube
+  or kind cluster. That also means having a small control plan overhead when running
+  hundres of pipelines. Tekton particuarly shines in large scale CD environments, as it gives
+  DevOps architects the full flexibility they need to setup up a CD system which meets the
+  enterprise needs for security and compliance, while letting software engineers quickly and
+  easily develop their pipelines through a catalog of curated bulding blocks.
+
+  Tekton benefits from a lively community, with contributions from more than 150 companies
+  and a collection of different projects that provide from workflow definition, event handling,
+  user interfaces, catalog and security.
+}
+
 \begin{lgrayrwhiteframe}
-  \frametitle{A bit of history}
+  \frametitle{At a Glance}
+  \vspace{0.03\paperheight}
+  ~~~~~~~~~~~~~~~\includesvg[width=0.1\paperwidth]{img/cdf-stacked-color.svg}
+  \vspace{0.03\paperheight}
+  ~
   \begin{itemize}
-    \item From Knative Built, to Pipeline
     \item Extend the k8s API with CRDs
-    \item Tekton and the CDF
-  \end{itemize}
-  \vspace{0.03\paperheight}
-  ~~~~~\includesvg[width=0.1\paperwidth]{img/cdf-stacked-color.svg}
-  \vspace{0.03\paperheight}
-  \begin{itemize}
-    \item Definitions: Step, Task, Pipeline
-    \item Bindings: Workspaces, Parameters, \\Results
+    \item Definitions: Task, Pipeline
     \item Execution: TaskRun, PipelineRun
+    \item Bindings: \\Workspaces, Parameters, Results
+  \end{itemize}
+  ~
+  \begin{itemize}
+    \item Tekton v1 -- Q1 2022
+    \item Standalone or building block
   \end{itemize}
   \begin{textblock*}{0.51\paperwidth}(0.48\paperwidth,0.33\paperheight)
     \includegraphics[width=0.5\paperwidth]{img/tekton-workspaces.png}
   \end{textblock*}
-  % Knative, Tekton and the CDF
 \end{lgrayrwhiteframe}
+
+\note{
+  Tekton was one of the founding members of the continuous delivery foundation (CDF)
+  back at the beginning of 2019.
+  It extends the k8s API with CD specific resources.
+  Tasks, Pipelines...
+  We aim for the Q1 or 2022 for Tekton v1
+  Tekton is often used as building block for other platforms, like OpenShift Pipelines,
+  Jenkins X, Kubeflow Pipelines and more. The Tekton community cares deeply
+  about the stability of its API and happiness of its users.
+}
 
 \section[From 0 to CD]{From 0 to CD\\\ldots step by step}
 \begin{sectionwithpic}[cat-walking-on-stairs.jpg]{Public domain photo, CC0}
 \end{sectionwithpic}
+
+\note{
+  Let's see Tekton in action.
+  For the demo sections today, we'll use OpenShift Pipelines, which is a distribution
+  of Tekton nicely integrated in OpenShift.
+}
 
 \begin{lpicrblack}[nadi-whatisdelirium-fZ8uf_L52wg-unsplash.jpg]{%
   Photo by \href{https://unsplash.com/@whatisdelirium}{\underline{Nadi Whatisdelirium}}, CC0
@@ -141,14 +171,30 @@
   \begin{itemize}
     \item One-liner (almost)
     \item Tekton Operator (\href{https://operatorhub.io/operator/tektoncd-operator}{\underline{OperatorHub}})
-    \item Nightly Build (Operator too)
+    \item Nightly Builds (Operator too)
     \item Helm (by CDF)\\~
     \item Multi-architecture (amd64, s390x, ppc64le, arm64)
+    \item Multi-OS (Workloads can run on Windows/amd64)
+  \end{itemize}
+  ~
+  \begin{itemize}
+    \item \href{https://cloud.redhat.com/learn/topics/ci-cd}{OpenShift Pipelines}
+    \item Let's install it!
   \end{itemize}
   }%
   {0.42}%
   \frametitle{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Install}
 \end{lpicrblack}
+
+\note{
+  First thing, we need to install Tekton.
+  There are several options, from a simple one-liner command with kubectl to
+  an operator. Tekton can run on several different architectures. It is also
+  possible to run Tekton Tasks on Windows cluster nodes.
+
+  OpenShift supports an operator.
+  -> Show installing openshift
+}
 
 \begin{lgrayframerpic}[thom-milkovic-FTNGfpYCpGM-unsplash.jpg]{%
   Photo by \href{https://unsplash.com/@thommilkovic}{\underline{Thom Milkovic}}, CC0
@@ -160,10 +206,18 @@
     \item Parameters, Results \& Workspaces
     \item OCI Bundles
   \end{itemize}
+  ~
+  \begin{itemize}
+    \item Let's install some tasks and pipelines
+  \end{itemize}
   }%
   {0.48}
   \frametitle{Authoring}
 \end{lgrayframerpic}
+
+\note{
+
+}
 
 \begin{lpicrblack}[john-yunker-Z9rKuPEU6Uc-unsplash.jpg]{%
   Photo by \href{https://unsplash.com/@jyunker}{\underline{John Yunker}}, CC0
@@ -177,6 +231,10 @@
     \item Tekton Dashboard
     \item \code{tkn}, \code{kubectl}
     \item Pods, Volumes \& Events
+  \end{itemize}
+  ~
+  \begin{itemize}
+    \item OpenShift Console
   \end{itemize}
   }%
   {0.50}%
