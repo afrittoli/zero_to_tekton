@@ -115,6 +115,12 @@ spec:
 
               # Make sure we run at least two pods
               kubectl scale --replicas=2 deployment/z2t-$(params.target)
+          - name: create-route
+            image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+            script: |
+              #!/usr/bin/env bash
+
+              oc expose service z2t-$(params.target) || echo "Route already there"
       params:
         - name: image
           value: $(params.registry)/zero2tekton@$(tasks.build.results.IMAGE_DIGEST)

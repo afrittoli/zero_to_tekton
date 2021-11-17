@@ -341,6 +341,14 @@
   In terms of security Tekton has an alpha version of hermetic builds, which
   isolate specific tasks from the external world. Tekton chains provides out
   band signature of container images and creation of attestations.
+
+  Show the docker hub repo with the signature.
+  Check the signature:
+  $ cosign verify -key cosign.pub index.docker.io/andreaf76/zero2tekton:<tag>
+
+  Get the sha from the pipeline results to show the attestation:
+  $ rekor-cli search --sha <sha>
+  $  rekor-cli get --uuid <uuid>
 }
 
 \begin{2columnsframe}{Experiments \& Dogfooding}%
@@ -411,8 +419,8 @@
   \normalsize
   Roadmap 2021:
   \begin{itemize}
-    \item Towards GA
-    \item LTS Policies
+    \item Towards GA, LTS Policies
+    \item Security: Audit and Features
     \item User stories, Documentation
     \item Dogfooding
   \end{itemize}
