@@ -5,7 +5,7 @@ metadata:
 spec:
   params:
     - name: registry
-      default: uk.icr.io/tekton
+      default: quay.io/afrittoli
       type: string
     - name: revision
       default: main
@@ -18,9 +18,9 @@ spec:
     - name: git-sha
       description: the git sha that has been built
       value: $(tasks.clone.results.commit)
-    # - name: image-sha
-    #   description: the sha of the target container image
-    #   value: $(tasks.build.results.IMAGE-DIGEST)
+    - name: image-sha
+      description: the sha of the target container image
+      value: $(tasks.build.results.IMAGE_DIGEST)
   tasks:
     - name: clone
       taskRef:
@@ -62,20 +62,20 @@ spec:
         - name: source
           workspace: source
           subPath: app
-    # - name: build
-    #   runAfter: ['clone']
-    #   taskRef:
-    #     name: kaniko
-    #   params:
-    #     - name: IMAGE
-    #       value: $(params.registry)/zero2tekton:$(tasks.clone.results.commit)
-    #     - name: CONTEXT
-    #       value: images/demo
-    #   workspaces:
-    #     - name: source
-    #       workspace: source
-    #     - name: dockerconfig
-    #       workspace: dockerconfig
+    - name: build
+      runAfter: ['snyk-python']
+      taskRef:
+        name: kaniko
+      params:
+        - name: IMAGE
+          value: $(params.registry)/zero2tekton:$(tasks.clone.results.commit)
+        - name: CONTEXT
+          value: app
+      workspaces:
+        - name: source
+          workspace: source
+        - name: dockerconfig
+          workspace: dockerconfig
     # - name: snyk-container
     #   runAfter: ['build']
     #   taskRef:
