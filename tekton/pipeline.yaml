@@ -5,10 +5,13 @@ metadata:
 spec:
   params:
     - name: registry
-      default: quay.io/afrittoli
+      default: index.docker.io/andreaf76
       type: string
     - name: revision
       default: main
+      type: string
+    - name: target
+      default: app
       type: string
   workspaces:
     - name: source
@@ -82,11 +85,38 @@ spec:
           workspace: source
         - name: dockerconfig
           workspace: dockerconfig
-    # - name: snyk-container
-    #   runAfter: ['build']
-    #   taskRef:
-    #     name: snyk-container
-    #   workspaces:
-    #     - name: source
-    #       workspace: source
-    #       subPath: app
+    - name: deploy
+      runAfter: ['build']
+      taskSpec:
+        params:
+          - name: image
+            type: string
+          - name: target
+            type: string
+            description: the suffix of the service and deployment (cnd-<suffix>)
+        results:
+          - name: url
+            description: the URL where the app is deployed to
+        steps:
+          - name: deploy
+            image: docker.io/bitnami/kubectl@sha256:792e0aaabee6c51d734b5d3b150ba990d6106c4c081731d8570c1b9afe0c52d9
+            script: |
+              #!/bin/sh
+              set -ex
+
+              # Try to create a deployment, in case it's our first run
+              kubectl create deployment z2t-$(params.target) --image $(params.image) || true
+
+              # Update the deployment, rollout new image
+              kubectl set image deployment/z2t-$(params.target) *=$(params.image)
+
+              # Create a service if it doesn't exists yet
+              kubectl expose deployment/z2t-$(params.target) --port 8080 --target-port 80 || true
+
+              # Make sure we run at least two pods
+              kubectl scale --replicas=2 deployment/z2t-$(params.target)
+      params:
+        - name: image
+          value: $(params.registry)/zero2tekton@$(tasks.build.results.IMAGE_DIGEST)
+        - name: target
+          value: $(params.target)

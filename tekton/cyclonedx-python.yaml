@@ -22,7 +22,8 @@ spec:
       workingDir: $(workspaces.source.path)
       script: |
         # Run cyclonedx-python tool
-        cyclonedx-py -i $(params.requirements) -o -
+        cyclonedx-py -i $(params.requirements) -o sbom.xml
+        cat sbom.xml
   workspaces:
   - description: Holds the context and docker file
     name: source
