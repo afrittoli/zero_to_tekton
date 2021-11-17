@@ -61,5 +61,10 @@
 \defbeamertemplate{itemize item}{chevron}{\usebeamerfont*{itemize item}\hbox{\faAngleRight}}
 \setbeamertemplate{items}[chevron]
 
+\def\beamer@framenotesbegin{% at beginning of slide
+  \gdef\beamer@noteitems{}%
+  \gdef\beamer@notes{{}}% used to be totally empty.
+}
+
 \mode
 <all>

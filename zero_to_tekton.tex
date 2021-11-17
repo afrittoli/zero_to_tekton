@@ -10,6 +10,8 @@
 \usepackage{fontawesome5}
 \usepackage{svg}
 
+% \setbeameroption{show notes}
+
 
 \title{From Zero to CD with Tekton}
 \date[17 Nov 2021 IBM Community Festival]{17 Nov 2021 | \faTwitter ~@blackchip76 | \faGithub ~afrittoli}
@@ -229,15 +231,15 @@
 
   Show the hub UI, search for a git task
   Search and install git-clone task via tkn
-  $ tkn hub search git-clone
-  $ tkn hub info task git-clone
-  $ tkn hub install task git-clone
-  $ tkn task describe git-clone
-  $ tkn hub install task pylint
-  $ tkn hub install task pytest
+     tkn hub search git-clone
+     tkn hub info task git-clone
+     tkn hub install task git-clone
+     tkn task describe git-clone
+     tkn hub install task pylint
+     tkn hub install task pytest
 
   Install other resources via kubectl
-  $ kubectl create -k tekton/
+     kubectl create -k tekton/
 
   Start the pipeline via the UI
 }
@@ -270,11 +272,11 @@
   Since Tekton resources are k8s resources, you can watch them with kubectl
   or tkn.
 
-  $ tkn pr list
-  $ tkn tr list
-  $ tkn tr describe <tr>
-  $ tkn tr logs <tr>
-  $ kubectl describe tr/<tr>
+     tkn pr list
+     tkn tr list
+     tkn tr describe <tr>
+     tkn tr logs <tr>
+     kubectl describe tr/<tr>
 
   And there you can see events too.
   Let's switch back to the console.
@@ -307,7 +309,7 @@
   a response.
   Let's see how we can set them it up with OpenShift Pipelines.
   # Set it up in OCP
-  # Set it up in https://github.com/afrittoli/zero_to_tekton/settings
+  # Set it up in https://github.com/afrittoli/zero\_to\_tekton/settings
   Now create the PR and watch the pipeline running.
 }
 
@@ -344,11 +346,11 @@
 
   Show the docker hub repo with the signature.
   Check the signature:
-  $ cosign verify -key cosign.pub index.docker.io/andreaf76/zero2tekton:<tag>
+     cosign verify -key cosign.pub index.docker.io/andreaf76/zero2tekton:<tag>
 
   Get the sha from the pipeline results to show the attestation:
-  $ rekor-cli search --sha <sha>
-  $  rekor-cli get --uuid <uuid>
+     rekor-cli search --sha <sha>
+     rekor-cli get --uuid <uuid>
 }
 
 \begin{2columnsframe}{Experiments \& Dogfooding}%
@@ -426,15 +428,6 @@
   \end{itemize}
   }
 \end{2columnsframe}
-
-% \begin{blackframe}
-%   \frametitle{TEP (optional)}
-%   \begin{itemize}
-%     \item Design principles
-%     \item TEP process
-%     \item TEP table
-%   \end{itemize}
-% \end{blackframe}
 
 \section[Q\&A]{Thank You! \\Questions?}
 
