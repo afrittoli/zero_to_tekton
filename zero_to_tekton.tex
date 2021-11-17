@@ -307,6 +307,7 @@
   a response.
   Let's see how we can set them it up with OpenShift Pipelines.
   # Set it up in OCP
+  # Set it up in https://github.com/afrittoli/zero_to_tekton/settings
   Now create the PR and watch the pipeline running.
 }
 
@@ -331,6 +332,15 @@
 \end{lpicrblack}
 
 \note{
+  It nice to watch your pipeline running, but you many not be always there.
+  Tekton can generate events and cloud events that can be used to setup
+  notifications and collect data to measure your pipelines.
+  Tekton also generates metrics that can be scrapped with Prometheus and
+  graphed for instance with Grafana.
+
+  In terms of security Tekton has an alpha version of hermetic builds, which
+  isolate specific tasks from the external world. Tekton chains provides out
+  band signature of container images and creation of attestations.
 }
 
 \begin{2columnsframe}{Experiments \& Dogfooding}%
