@@ -240,6 +240,8 @@
   $ kubectl create -f tekton/kaniko.yaml
   $ kubectl create -f tekton/pipeline.yaml
   $ kubectl create -f https://raw.githubusercontent.com/garethr/snyk-tekton/master/python/python.yaml
+
+  Start the pipeline via the UI
 }
 
 \begin{lpicrblack}[john-yunker-Z9rKuPEU6Uc-unsplash.jpg]{%
@@ -263,6 +265,22 @@
   {0.50}%
   \frametitle{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Watching}
 \end{lpicrblack}
+
+\note{
+  While the pipeline run, there a few ways we can watch it, starting from
+  the OpenShift console itself.
+  Since Tekton resources are k8s resources, you can watch them with kubectl
+  or tkn.
+
+  $ tkn pr list
+  $ tkn tr list
+  $ tkn tr describe <tr>
+  $ tkn tr logs <tr>
+  $ kubectl describe tr/<tr>
+
+  And there you can see events too.
+  Let's switch back to the console.
+}
 
 
 \begin{lgrayframerpic}[pouncing-cat.png]{Public domain photo, CC0}%

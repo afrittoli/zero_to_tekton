@@ -2,14 +2,14 @@
 # pylint: disable=E0401
 # pylint: disable=E1101
 
-import cats
+from cats import main
 import pytest
 
 
 @pytest.fixture
 def client():
     """Test client"""
-    app = cats.app
+    app = main.app
 
     with app.test_client() as client:
         yield client
