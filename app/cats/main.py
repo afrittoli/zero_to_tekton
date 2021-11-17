@@ -7,7 +7,9 @@ app = Flask(__name__)
 @app.route("/")
 def base():
     """Handles the / route"""
-    return "Hello, World!"
+    return render_template("index.html",
+                        cat=url_for('static', filename='cat.jpg'),
+                        greeting="World!")
 
 @app.route("/<greeting>")
 def hello_world(greeting):
