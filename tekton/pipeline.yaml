@@ -58,15 +58,15 @@ spec:
           workspace: source
           subPath: app
     - name: sbom
-      runAfter: ['unit']
+      runAfter: ['vulnerabilities']
       taskRef:
         name: cyclonedx-python
       workspaces:
         - name: source
           workspace: source
           subPath: app
-    - name: snyk-python
-      runAfter: ['sbom']
+    - name: vulnerabilities
+      runAfter: ['unit']
       taskRef:
         name: snyk-python
       workspaces:
@@ -74,7 +74,7 @@ spec:
           workspace: source
           subPath: app
     - name: build
-      runAfter: ['snyk-python']
+      runAfter: ['sbom']
       taskRef:
         name: kaniko
       params:
