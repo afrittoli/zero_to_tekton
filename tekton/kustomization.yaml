@@ -1,0 +1,5 @@
+resources:
+  - kaniko.yaml
+  - cyclonedx-python.yaml
+  - https://raw.githubusercontent.com/garethr/snyk-tekton/master/python/python.yaml
+  - pipeline.yaml

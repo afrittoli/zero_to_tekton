@@ -237,9 +237,7 @@
   $ tkn hub install task pytest
 
   Install other resources via kubectl
-  $ kubectl create -f tekton/kaniko.yaml
-  $ kubectl create -f tekton/pipeline.yaml
-  $ kubectl create -f https://raw.githubusercontent.com/garethr/snyk-tekton/master/python/python.yaml
+  $ kubectl create -k tekton/
 
   Start the pipeline via the UI
 }
@@ -280,6 +278,13 @@
 
   And there you can see events too.
   Let's switch back to the console.
+
+  Oh, there was an issue with the snyk check, it looks like the Flask
+  version we're using is vulnerable.
+  Let's fix it.
+  # Create a commit
+  Before I push this, I'd like to re-run the pipeline before the PR is merged
+  Let's see how we can do that.
 }
 
 
@@ -296,6 +301,15 @@
   \frametitle{Launching}
 \end{lgrayframerpic}
 
+\note{
+  Tekton triggers introduces a few extra k8s custom resources, that can
+  be used to listen for events, filter them and run Tekton pipelines as
+  a response.
+  Let's see how we can set them it up with OpenShift Pipelines.
+  # Set it up in OCP
+  Now create the PR and watch the pipeline running.
+}
+
 \begin{lpicrblack}[sereja-ris-g3B53PbBfwU-unsplash.png]{%
   Photo by \href{https://unsplash.com/@serejaris}{\underline{Sereja Ris}}, CC0
   }%
@@ -308,13 +322,16 @@
   \end{itemize}
   ~\\
   \begin{itemize}
-    \item Tekton Results
-    \item Resource Cleanups (WIP)
+    \item Hermetic Builds (Alpha)
+    \item Tekton Chains
   \end{itemize}
   }%
   {0.65}%
-  \frametitle{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Monitoring \& Cleanup}
+  \frametitle{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Monitoring \& Security}
 \end{lpicrblack}
+
+\note{
+}
 
 \begin{2columnsframe}{Experiments \& Dogfooding}%
   {%

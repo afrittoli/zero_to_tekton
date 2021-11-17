@@ -46,18 +46,26 @@ spec:
         - name: source
           workspace: source
           subPath: app
-    - name: snyk-python
-      runAfter: ['unit']
-      taskRef:
-        name: snyk-python
-      workspaces:
-        - name: source
-          workspace: source
-          subPath: app
     - name: unit
       runAfter: ['lint']
       taskRef:
         name: pytest
+      workspaces:
+        - name: source
+          workspace: source
+          subPath: app
+    - name: sbom
+      runAfter: ['unit']
+      taskRef:
+        name: cyclonedx-python
+      workspaces:
+        - name: source
+          workspace: source
+          subPath: app
+    - name: snyk-python
+      runAfter: ['sbom']
+      taskRef:
+        name: snyk-python
       workspaces:
         - name: source
           workspace: source
@@ -69,8 +77,6 @@ spec:
       params:
         - name: IMAGE
           value: $(params.registry)/zero2tekton:$(tasks.clone.results.commit)
-        - name: CONTEXT
-          value: app
       workspaces:
         - name: source
           workspace: source

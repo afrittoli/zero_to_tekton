@@ -1,0 +1,28 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  annotations:
+    tekton.dev/platforms: linux/amd64
+    tekton.dev/tags: sbom
+  labels:
+    app.kubernetes.io/version: "0.1"
+  name: cyclonedx-python
+  namespace: default
+spec:
+  description: |-
+    Run the cyclonedx-python tool to generate an SBOM based on the requirements file
+  params:
+  - name: requirements
+    description: The full path to the requirements file
+    default: ./requirements.txt
+    type: string
+  steps:
+    - name: generate-sbom
+      image: cyclonedx/cyclonedx-python@sha256:d858b2173c6458fb41c1fbe048766fc25864e082c5d16762fd30bd2918fb76bb
+      workingDir: $(workspaces.source.path)
+      script: |
+        # Run cyclonedx-python tool
+        cyclonedx-py -i $(params.requirements) -o -
+  workspaces:
+  - description: Holds the context and docker file
+    name: source
