@@ -167,6 +167,7 @@ tekton/.secrets
 # python
 .venv
 .idea
+**/__pycache__
 
 # tekton
 workspace-template.yaml

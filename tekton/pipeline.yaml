@@ -38,13 +38,30 @@ spec:
       taskRef:
         name: pylint
       params:
+        - name: path
+          value: cats
         - name: args
           value: ["-r", "y"]
-        - name: path
-          value: app/app
       workspaces:
         - name: source
           workspace: source
+          subPath: app
+    - name: snyk-python
+      runAfter: ['unit']
+      taskRef:
+        name: snyk-python
+      workspaces:
+        - name: source
+          workspace: source
+          subPath: app
+    - name: unit
+      runAfter: ['lint']
+      taskRef:
+        name: pytest
+      workspaces:
+        - name: source
+          workspace: source
+          subPath: app
     # - name: build
     #   runAfter: ['clone']
     #   taskRef:
@@ -59,3 +76,11 @@ spec:
     #       workspace: source
     #     - name: dockerconfig
     #       workspace: dockerconfig
+    # - name: snyk-container
+    #   runAfter: ['build']
+    #   taskRef:
+    #     name: snyk-container
+    #   workspaces:
+    #     - name: source
+    #       workspace: source
+    #       subPath: app
