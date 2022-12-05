@@ -329,6 +329,34 @@
   \end{frame}
 }
 
+\newenvironment<>{sectionwithpicmediumcentral}[2][]
+{
+  \begin{frame}[t]
+    \begin{textblock*}{\paperwidth}(0cm,0cm)
+      \includegraphics[width=\paperwidth]{img/#1}
+    \end{textblock*}
+    \begin{textblock*}{0.2\paperwidth}(0.3\paperwidth,0.08\paperheight)
+      \begin{center}
+        \includegraphics[width=0.4\paperwidth]{img/cdevents_horizontal-white.png}
+      \end{center}
+    \end{textblock*}
+    \begin{textblock*}{\paperwidth}(0.1\paperheight,0.45\paperheight)%
+      \begin{beamercolorbox}[wd=0.9\paperwidth]{section page header}%
+        \usebeamerfont{largecentral}%
+          \centering\insertsection%
+      \end{beamercolorbox}%
+    \end{textblock*}
+    \begin{textblock*}{0.4\paperwidth}(0.005\paperwidth,0.97\paperheight)
+      \begin{beamercolorbox}[wd=0.4\paperwidth]{photolicense}
+        \usebeamerfont{photolicense}#2%
+      \end{beamercolorbox}%
+      \vfill
+    \end{textblock*}
+}
+{
+  \end{frame}
+}
+
 \newenvironment{lpicrblack}[4][]
 {
   \setbeamercolor{background canvas}{bg=myblack}
@@ -355,6 +383,43 @@
         #3
       \end{columns}
     }
+}
+{
+  \end{frame}
+}
+
+% #1 Speaker Pic
+% #2 Speaker name
+% #3 Speaker name subtitle - e.g. social
+% #4 Test in the middle
+\newenvironment<>{speakerframe}[4][]
+{
+  \setwhitefootline{}
+  \setbeamertemplate{background}{
+    \includegraphics[width=\paperwidth,height=\paperheight]{img/cdeventscon-gradient-16-9.jpg}
+  }
+  \settextcolour{white}
+  \begin{frame}[t]
+    \begin{textblock*}{0.45\paperwidth}(0.55\paperwidth,0cm)
+      \includegraphics[width=0.45\paperwidth]{img/#1}
+    \end{textblock*}
+    \begin{textblock*}{\paperwidth}(0.32cm,0.34cm)
+      \begin{beamercolorbox}[wd=\paperwidth]{section page header}
+        \usebeamerfont{largeauthor}#2%
+      \end{beamercolorbox}%
+      \vfill
+    \end{textblock*}
+    \begin{textblock*}{\paperwidth}(0.32cm,0.18\paperheight)
+      \begin{beamercolorbox}[wd=\paperwidth]{section page header}
+        \usebeamerfont{smallauthor}#3%
+      \end{beamercolorbox}%
+      \vfill
+    \end{textblock*}
+    \begin{textblock*}{\paperwidth}(0.32cm,0.35\paperheight)
+      \begin{beamercolorbox}[wd=0.7\paperwidth]{section page header}
+        #4%
+      \end{beamercolorbox}%
+    \end{textblock*}
 }
 {
   \end{frame}
