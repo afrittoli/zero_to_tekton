@@ -23,7 +23,7 @@ spec:
       value: $(tasks.clone.results.commit)
     - name: image-sha
       description: the sha of the target container image
-      value: $(tasks.build.results.IMAGE-DIGEST)
+      value: $(tasks.build.results.IMAGE_DIGEST)
     - name: app-url
       description: the URL to reach the deployed app
       value: $(tasks.deploy.results.url)
@@ -119,6 +119,6 @@ spec:
               fi
       params:
         - name: image
-          value: $(params.registry)/zero2tekton@$(tasks.build.results.IMAGE-DIGEST)
+          value: $(params.registry)/zero2tekton@$(tasks.build.results.IMAGE_DIGEST)
         - name: target
           value: $(params.target)

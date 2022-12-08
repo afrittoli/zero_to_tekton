@@ -247,6 +247,8 @@
   \begin{itemize}
     \item Tasks \& Pipelines \faProjectDiagram
     \item Parameters, Results \& Workspaces \\~
+    \item Conditions, Matrices
+    \item Sidecars, "Final" tasks \\~
     \item Catalog \& Hub \faSearch
     \item Git, OCI Registries \\~
     \item Trusted Resources \faLock
@@ -360,19 +362,18 @@
   }%
   {%
   \begin{itemize}
-    \item Unattended Execution
+    \item Unattended Execution \\~
     \item Events, \code{CloudEvents}
-    \item Notifications:\\GitHub, Slack and more
-    \item Monitoring \& Measuring
-  \end{itemize}
-  ~\\
-  \begin{itemize}
-    \item Hermetic Builds (Alpha)
-    \item Tekton Chains
+    \begin{itemize}
+      \item Notifications:\\GitHub, Slack and more
+    \end{itemize}
+    \item Long term result storage
+    \item Metrics \\~
+    \item Tracing (coming soon)
   \end{itemize}
   }%
   {0.65}%
-  \frametitle{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Monitoring \& Security}
+  \frametitle{~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Monitoring \& Observability}
 \end{lpicrblack}
 
 \note{
@@ -395,35 +396,40 @@
      rekor-cli get --uuid <uuid>
 }
 
-\begin{2columnsframe}{Experiments \& Dogfooding}%
+\begin{2columnsframe}{Advanced \& Security}%
   {%
+  Tekton Chains
   \begin{itemize}
-    \item Custom Tasks:\\
-          Loops \& Iterations \\
-          Pipeline in Pipelines
-          Wait, CEL Run
+    \item Artifact signing
+    \item Artifact provenance
+    \item Sigstore integration
   \end{itemize}
   ~\\
   ~\\
   ~\\
-  ~\\
+  Tekton Pipelines
   \begin{itemize}
-    \item Custom Interceptors (GitHub)
-    \item DSL, SDK, Notifiers
+    \item Trusted Resources (alpha)
+    \item Non-falsifiable Provenance (alpha)
+    \item Hermetic Builds (alpha)
+    \item Working towards SLSA lvl3
   \end{itemize}
   }{%
+  Custom Task
   \begin{itemize}
-    \item Using Tekton to CD Tekton
-    \item Release, GitOps, CI \\~
+    \item Pipeline in Pipelines
+    \item Wait Task, GitHub Status
   \end{itemize}
+  Custom Interceptors \\
+  Trigger Groups \\
   ~\\
   ~\\
-  ~\\
-  ~\\
+  Workflows
   \begin{itemize}
-    \item From Experiments to Feature
-    \item Source of examples
-    \item Bug discovery, feature requests
+    \item Quick-start Tekton CI
+    \item Configuration in Git
+    \item SCM Webhooks
+    \item Concurrency controls
   \end{itemize}
   }
 \end{2columnsframe}
@@ -461,12 +467,13 @@
   ~\\
   \tiny~\\
   \normalsize
-  Roadmap 2021:
+  Roadmap 2023:
   \begin{itemize}
-    \item Towards GA, LTS Policies
-    \item Security: Audit and Features
+    \item Tekton V1 API
+    \item Security Features
+    \item Observability
+    \item Workflows
     \item User stories, Documentation
-    \item Dogfooding
   \end{itemize}
   }
 \end{2columnsframe}
@@ -487,9 +494,7 @@
     \item Tekton: \href{https://tekton.dev}{tekton.dev}
     \item Tekton Docs: \href{https://tekton.dev/docs}{tekton.dev/docs}
     \item Tekton on GitHub: \href{https://github.com/tektoncd}{github.com/tektoncd}
-    \item Tekton Hub: \href{https://hub.tekton.dev}{hub.tekton.dev}
     \item Tekton on Operator Hub:\\\href{https://https://operatorhub.io/operator/tektoncd-operator}{https://operatorhub.io/operator/tektoncd-operator}
-    \item Tekton Results: \href{https://github.com/tektoncd/results}{github.com/tektoncd/results}
     \item Tekton Enhancement Proposals (TEPs): \href{https://github.com/tektoncd/community/tree/main/teps\#tekton-enhancement-proposals-teps}{github.com/tektoncd/community/tree/main/teps}
   \end{itemize}
   \begin{textblock*}{0.13\paperwidth}(0.73\paperwidth,0.65\paperheight)

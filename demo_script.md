@@ -142,6 +142,8 @@ tkn task describe kaniko
 We build a simple pipeline:
 
 ```sh
+tkn hub install task pylint
+tkn hub install task pytest
 kubectl create -f tekton/pipeline.yaml
 ```
 
