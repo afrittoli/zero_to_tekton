@@ -13,12 +13,12 @@
 % \setbeameroption{show notes}
 
 
-\title{From Zero to CD with Tekton}
-\date[17 Nov 2021 IBM Community Festival]{17 Nov 2021 | \faTwitter ~@blackchip76 | \faGithub ~afrittoli}
+\title{From Zero to Tekton\\\normalsize{An introduction to CI/CD with the Robocat \faRobot\faCat}}
+\date[9 Dec 2022 Meet\&Learn]{9 Dec 2022 | \faTwitter ~@blackchip76 | \faGithub ~afrittoli}
 \author[Andrea Frittoli]{%
   Andrea Frittoli \\
-  Developer Advocate \\
-  andrea.frittoli@uk.ibm.com \\
+  Open Source Advocate \\
+  andrea.frittoli@uk.ibm.com
 }
 
 \usetheme{af}
@@ -42,6 +42,21 @@
 \begin{frame}
 \titlepage{}
 \end{frame}
+
+\begin{speakerframe}[af_wind.jpg]{Andrea Frittoli}%
+  {%
+  \faGithub ~afrittoli | \faLinkedin ~andreafrittoli | \faTwitter ~@blackchip76
+  }%
+  {%
+  \begin{itemize}
+    \item{Open Source Advocate @ IBM}
+    \item{Lives in Wales, enjoys the wind}
+    \item{Tekton maintainer, Governing Board}
+    \item{CDEvents maintainer, Events SIG co-chair}
+    \item{CDF Technical Oversight Committee \\ Governing Board}
+  \end{itemize}
+  }%
+\end{speakerframe}
 
 \begin{lpicrblack}[chewy-I-rgDPLKogs-unsplash.jpg]{%
   Photo by \href{https://unsplash.com/@chewy}{\underline{Chewy}}, CC0
@@ -78,25 +93,32 @@
   Maximum Flexibility \\
   }%
   {%
-  Projects \\
   \vspace{0.01\textheight}
+  Core:
   \begin{itemize}
     \item Pipeline
     \item Triggers
-    \item Dashboard
-    \item CLI
-    \item Catalog, Hub
-    \item Results
     \item Chains
+  \end{itemize}
+  ~ \\
+  Tools:
+  \begin{itemize}
+    \item CLI, Dashboard
     \item Operator
   \end{itemize}
   }%
   {%
-  Community \\
-  \vspace{0.03\textheight}
-  More than 150 Companies \\
-  \vspace{0.01\textheight}
-  Google, IBM, RedHat, VMWare
+  Authoring:
+  \begin{itemize}
+    \item Catalog, Hub
+    \item ArtifactHub
+  \end{itemize}
+  ~ \\
+  New:
+  \begin{itemize}
+    \item Results
+    \item Workflows
+  \end{itemize}
   }%
   % \begin{textblock*}{0.13\paperwidth}(0.73\paperwidth,0.65\paperheight)
   %   \includesvg[width=0.13\paperwidth]{img/tekton-icon-color.svg}
@@ -125,10 +147,30 @@
 
 \begin{lgrayrwhiteframe}
   \frametitle{At a Glance}
-  \vspace{0.03\paperheight}
-  ~~~~~~~~~~~~~~~\includesvg[width=0.1\paperwidth]{img/cdf-stacked-color.svg}
-  \vspace{0.03\paperheight}
+  \begin{itemize}
+    \item 2018 Initial concept
+    \item 2019 Donated to CD Foundation
+    \item 2022 Graduated Project
+    \begin{itemize}
+      \item LTS Releases
+      \item Adoptions
+      \item Best Practices
+      \item Security
+    \end{itemize}
+    \item Jan 2023 Tekton v1 API
+  \end{itemize}
   ~
+  \begin{itemize}
+    \item 150+ Companies
+    \item Google, IBM, RedHat, VMWare \& others
+  \end{itemize}
+  \begin{textblock*}{0.51\paperwidth}(0.57\paperwidth,0.33\paperheight)
+    \includesvg[width=0.3\paperwidth]{img/cdf-stacked-color.svg}
+  \end{textblock*}
+\end{lgrayrwhiteframe}
+
+\begin{lgrayrwhiteframe}
+  \frametitle{At a Glance}
   \begin{itemize}
     \item Extend the k8s API with CRDs
     \item Definitions: Task, Pipeline
@@ -137,8 +179,9 @@
   \end{itemize}
   ~
   \begin{itemize}
-    \item Tekton v1 -- Q1 2022
-    \item Standalone or building block
+    \item TaskRun -> Pod
+    \item Step -> Container
+    \item Workspace -> Volume, Configmap, Secret
   \end{itemize}
   \begin{textblock*}{0.51\paperwidth}(0.48\paperwidth,0.33\paperheight)
     \includegraphics[width=0.5\paperwidth]{img/tekton-workspaces.png}
@@ -156,7 +199,7 @@
   about the stability of its API and happiness of its users.
 }
 
-\section[From 0 to CD]{From 0 to CD\\\ldots step by step}
+\section[From 0 to Tekton]{From 0 to Tekton\\\ldots step by step}
 \begin{sectionwithpic}[cat-walking-on-stairs.jpg]{Public domain photo, CC0}
 \end{sectionwithpic}
 
@@ -173,14 +216,13 @@
   \begin{itemize}
     \item One-liner (almost)
     \item Tekton Operator (\href{https://operatorhub.io/operator/tektoncd-operator}{\underline{OperatorHub}})
-    \item Nightly Builds (Operator too)
-    \item Helm (by CDF)\\~
+    \item Nightly Builds (Operator too) 
+    \item \href{https://cloud.redhat.com/learn/topics/ci-cd}{OpenShift Pipelines} \\~
     \item Multi-architecture (amd64, s390x, ppc64le, arm64)
     \item Multi-OS (Workloads can run on Windows/amd64)
   \end{itemize}
   ~
   \begin{itemize}
-    \item \href{https://cloud.redhat.com/learn/topics/ci-cd}{OpenShift Pipelines}
     \item Let's install it!
   \end{itemize}
   }%
@@ -203,11 +245,11 @@
   }%
   {%
   \begin{itemize}
-    \item Catalog \& Hub
-    \item Tasks \& Pipelines
-    \item Parameters, Results \& Workspaces
-    \item OCI Bundles
-    \item Signed Tasks and Pipelines (WIP)
+    \item Tasks \& Pipelines \faProjectDiagram
+    \item Parameters, Results \& Workspaces \\~
+    \item Catalog \& Hub \faSearch
+    \item Git, OCI Registries \\~
+    \item Trusted Resources \faLock
   \end{itemize}
   ~
   \begin{itemize}
@@ -386,7 +428,7 @@
   }
 \end{2columnsframe}
 
-\section[Roadmap]{Roadmap}
+\section[Roadmap]{Roadmap \faRobot\faCat}
 \begin{sectionwithpicrx}[julie_falk_flickr_22258190324_6a583208ae_k.png]{Photo by \href{https://www.flickr.com/photos/piper/}{\underline{Julie Falk}}, CC BY-NC 2.0}
 \end{sectionwithpicrx}
 

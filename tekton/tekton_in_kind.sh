@@ -1,14 +1,14 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e -o pipefail
 
-declare TEKTON_PIPELINE_VERSION TEKTON_TRIGGERS_VERSION TEKTON_DASHBOARD_VERSION
+declare TEKTON_PIPELINE_VERSION TEKTON_TRIGGERS_VERSION TEKTON_DASHBOARD_VERSION CONTAINER_RUNTIME
 
 # This script deploys Tekton on a local kind cluster
 # It creates a kind cluster and deploys pipeline, triggers and dashboard
 
 # Prerequisites:
 # - go 1.14+
-# - docker (recommended 8GB memory config)
+# - podman or docker (recommended 8GB memory config)
 # - kind
 
 # Notes:
@@ -23,7 +23,7 @@ get_latest_release() {
 }
 
 # Read command line options
-while getopts ":c:p:t:d:" opt; do
+while getopts ":c:p:t:d:k" opt; do
   case ${opt} in
     c )
       CLUSTER_NAME=$OPTARG
@@ -37,10 +37,13 @@ while getopts ":c:p:t:d:" opt; do
     d )
       TEKTON_DASHBOARD_VERSION=$OPTARG
       ;;
+    k )
+      CONTAINER_RUNTIME="docker"
+      ;;
     \? )
       echo "Invalid option: $OPTARG" 1>&2
       echo 1>&2
-      echo "Usage:  tekton_in_kind.sh [-c cluster-name -p pipeline-version -t triggers-version -d dashboard-version]"
+      echo "Usage:  tekton_in_kind.sh [-c cluster-name -p pipeline-version -t triggers-version -d dashboard-version [-k]"
       ;;
     : )
       echo "Invalid option: $OPTARG requires an argument" 1>&2
@@ -61,14 +64,20 @@ fi
 if [ -z "$TEKTON_DASHBOARD_VERSION" ]; then
   TEKTON_DASHBOARD_VERSION=$(get_latest_release tektoncd/dashboard)
 fi
+if [ -z "$CONTAINER_RUNTIME" ]; then
+  CONTAINER_RUNTIME="podman"
+fi
 
 echo "===> Creating a Kind Cluster"
 # create registry container unless it already exists
 reg_name='kind-registry'
 reg_port='5000'
-running="$(docker inspect -f '{{.State.Running}}' "${reg_name}" 2>/dev/null || true)"
+running="$(${CONTAINER_RUNTIME} inspect -f '{{.State.Running}}' "${reg_name}" 2>/dev/null || true)"
 if [ "${running}" != 'true' ]; then
-  docker run \
+  # It may exists and not be running, so cleanup just in case
+  "$CONTAINER_RUNTIME" rm "${reg_name}" 2> /dev/null || true
+  # And start a new one
+  "$CONTAINER_RUNTIME" run \
     -d --restart=always -p "${reg_port}:5000" --name "${reg_name}" \
     registry:2
 fi
@@ -90,10 +99,10 @@ nodes:
             node-labels: "ingress-ready=true"
     extraPortMappings:
       - containerPort: 80
-        hostPort: 80
+        hostPort: 8080
         protocol: TCP
       - containerPort: 443
-        hostPort: 443
+        hostPort: 8443
         protocol: TCP
   - role: worker
   - role: worker
@@ -102,6 +111,8 @@ featureGates:
 containerdConfigPatches:
 - |-
   [plugins."io.containerd.grpc.v1.cri".registry.mirrors."localhost:${reg_port}"]
+    endpoint = ["http://${reg_name}:${reg_port}"]
+  [plugins."io.containerd.grpc.v1.cri".registry.mirrors."${reg_name}:${reg_port}"]
     endpoint = ["http://${reg_name}:${reg_port}"]
 EOF
 fi
@@ -113,59 +124,7 @@ done &
 
 # connect the registry to the cluster network
 # (the network may already be connected)
-docker network connect "kind" "${reg_name}" || true
-
-echo "===> Deploying the Ingress controller"
-# Deploy the ingress
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/provider/kind/deploy.yaml
-kubectl wait --namespace ingress-nginx \
-  --for=condition=ready pod \
-  --selector=app.kubernetes.io/component=controller \
-  --timeout=120s
-
-echo "===> RBAC and secrets"
-# Install some basic RBAC and secrets needed by triggers
-kubectl create -f tekton/rbac.yaml
-if [ -f tekton/.secrets/icr.yaml ]; then
-  kubectl create -f tekton/.secrets/icr.yaml || true
-  kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "all-icr-io"}]}' || true
-fi
-if [ -f tekton/.secrets/config.json ]; then
-  kubectl create secret generic regcred \
-    --from-file=config.json=tekton/.secrets/config.json \
-    --from-file=.dockerconfigjson=tekton/.secrets/config.json \
-    --type=kubernetes.io/dockerconfigjson || true
-fi
-
-kubectl create namespace tekton-pipelines
-
-cat <<EOF | kubectl create -f -
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: tekton-dashboard
-  namespace: tekton-pipelines
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /\$2
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      rewrite ^(/[a-z1-9\-]*)$ \$1/ redirect;
-spec:
-  rules:
-  - http:
-      paths:
-      - path: /dashboard(/|$)(.*)
-        pathType: Prefix
-        backend:
-          service:
-            name: tekton-dashboard
-            port:
-              number: 9097
-EOF
-
-# Start a background script that updates the github token
-./tekton/githubapp.sh &
-
-echo "===> Install Tekton"
+"$CONTAINER_RUNTIME" network connect "kind" "${reg_name}" || true
 
 echo export TEKTON_PIPELINE_VERSION=$TEKTON_PIPELINE_VERSION
 echo export TEKTON_TRIGGERS_VERSION=$TEKTON_TRIGGERS_VERSION

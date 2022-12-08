@@ -4,15 +4,6 @@ Some environment variables to access clusters:
 
 ```sh
 KIND_CONTEXT=kind-tekton
-IKS_CONTEXT=tekton-cnd/c1ipfjgl0c79a0bo9peg
-```
-
-This is specific to my laptop:
-
-```sh
-export PS1=$PSTEKTONIBM  # Nice prompts
-ibm_login_eu  # login to IBM cloud
-iks cluster config --cluster tekton-cnd # Update the token in the context
 ```
 
 ## Install
@@ -47,21 +38,6 @@ fi
 kubectl wait -n tekton-pipelines --for=condition=ready pods --all --timeout=120s
 ```
 
-### Setup in IBM Cloud with the Tekton Operator
-
-```sh
-# Source https://github.com/tektoncd/operator
-
-# Install the operator
-kubectl apply -f https://storage.googleapis.com/tekton-releases/operator/latest/release.yaml
-
-# Check that all pods are ready in the tekton-operator ns
-kubectl wait --for=condition=ready pod --all -n tekton-operator
-
-# Install Tekton
-kubectl apply -f https://raw.githubusercontent.com/tektoncd/operator/main/config/crs/kubernetes/config/all/operator_v1alpha1_config_cr.yaml
-```
-
 ### Check versions
 
 With the CLI:
@@ -73,7 +49,7 @@ tkn version
 With the Dashboard:
 
 ```sh
-kubectl --context $IKS_CONTEXT port-forward service/tekton-dashboard -n tekton-pipelines 9097 &
+kubectl port-forward service/tekton-dashboard -n tekton-pipelines 9097 &
 ```
 
 ### Nightly builds
