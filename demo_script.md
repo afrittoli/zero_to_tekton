@@ -109,27 +109,13 @@ kubectl describe pod <pod-name>
 Notice the `EmptyDir` workspace.
 Notice the `step-clone` container. Steps in Tekton tasks are containers, executed sequentially.
 
-Edit the task to see what happens `kubectl edit task/git-clone`:
-
-```yaml
-  - image: docker.io/library/busybox@sha256:ae39a6f5c07297d7ab64dbd4f82c77c874cc6a94cea29fdec309d0992574b4f7
-    name: hello
-    resources: {}
-    script: |
-      echo "Hello, everyone"
-      echo "======"
-      ls $(workspaces.output.path)
-```
-
-Look at the steps via the dashboard.
-
 ### Pipelines, PipelineRuns, Workspaces, Results
 
 Let's build something more interesting:
 
 ```sh
 tkn hub search --tags image-build
-tkn task install kaniko
+tkn hub install task kaniko
 tkn task describe kaniko
 ```
 
@@ -138,7 +124,7 @@ We build a simple pipeline:
 ```sh
 tkn hub install task pylint
 tkn hub install task pytest
-kubectl create -f tekton/pipeline.yaml
+kubectl create -k tekton
 ```
 
 To run the pipeline:
