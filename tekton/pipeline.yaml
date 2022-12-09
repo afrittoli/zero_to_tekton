@@ -57,18 +57,18 @@ spec:
         - name: source
           workspace: source
           subPath: app
-    - name: sbom
-      runAfter: ['vulnerabilities']
-      taskRef:
-        name: cyclonedx-python
-      workspaces:
-        - name: source
-          workspace: source
-          subPath: app
     - name: vulnerabilities
       runAfter: ['unit', 'lint']
       taskRef:
         name: snyk-python
+      workspaces:
+        - name: source
+          workspace: source
+          subPath: app
+    - name: sbom
+      runAfter: ['vulnerabilities']
+      taskRef:
+        name: cyclonedx-python
       workspaces:
         - name: source
           workspace: source
