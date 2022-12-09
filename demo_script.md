@@ -10,9 +10,7 @@ KIND_CONTEXT=kind-tekton
 
 ### Local setup on a kind cluster
 
-- Deploy a registry
 - Deploy a kind cluster with 3 nodes
-- Deploy latest pipeline, triggers and dashboard
 
 Setup the Kind Cluster:
 
@@ -24,15 +22,12 @@ Setup the Kind Cluster:
 Install Tekton:
 
 ```sh
+env | grep TEKTON
+
 # Install Tekton Pipeline, Triggers and Dashboard
 kubectl apply -f https://storage.googleapis.com/tekton-releases/pipeline/previous/${TEKTON_PIPELINE_VERSION}/release.yaml
-kubectl apply -f https://storage.googleapis.com/tekton-releases/triggers/previous/${TEKTON_TRIGGERS_VERSION}/release.yaml
 kubectl apply -f https://github.com/tektoncd/dashboard/releases/download/${TEKTON_DASHBOARD_VERSION}/tekton-dashboard-release.yaml
-
-if [ -f tekton/.secrets/icr.yaml ]; then
-  kubectl create -f tekton/.secrets/icr.yaml -n tekton-pipelines || true
-  kubectl patch serviceaccount tekton-pipelines-controller -n tekton-pipelines -p '{"imagePullSecrets": [{"name": "all-icr-io"}]}' || true
-fi
+# kubectl apply -f https://storage.googleapis.com/tekton-releases/triggers/previous/${TEKTON_TRIGGERS_VERSION}/release.yaml
 
 # Wait until all pods are ready
 kubectl wait -n tekton-pipelines --for=condition=ready pods --all --timeout=120s
@@ -70,8 +65,7 @@ Currently we build:
 - _s390x_ - Tests: Nightly (e2e, on Z cluster at IBM)
 - _ppc64le_ - Tests: Nightly (e2e, on Power cluster at IBM)
 - _arm64_ - Tests: none yet, looking for an arm64 provider
-
-Work [has started](https://github.com/tektoncd/community/pull/383) for Windows support.
+- _windows_ - Tests: note yet, looking for a windows provider
 
 ## Authoring
 
@@ -135,7 +129,7 @@ Let's build something more interesting:
 
 ```sh
 tkn hub search --tags image-build
-tkn hub install task kaniko
+tkn task install kaniko
 tkn task describe kaniko
 ```
 
