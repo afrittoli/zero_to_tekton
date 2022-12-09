@@ -50,7 +50,7 @@ spec:
           workspace: source
           subPath: app
     - name: unit
-      runAfter: ['lint']
+      runAfter: ['clone']
       taskRef:
         name: pytest
       workspaces:
@@ -66,7 +66,7 @@ spec:
           workspace: source
           subPath: app
     - name: vulnerabilities
-      runAfter: ['unit']
+      runAfter: ['unit', 'lint']
       taskRef:
         name: snyk-python
       workspaces:

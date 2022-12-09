@@ -6,7 +6,7 @@ spec:
   params:
     - name: registry
       type: string
-      default: uk.icr.io/tekton
+      default: index.docker.io/andreaf76
     - name: revision
       type: string
       default: main
